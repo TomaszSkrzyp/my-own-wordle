@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../css/loginStyles.css">
+    <title>Wordle</title>
+</head>
+<body>
+    <h1>Welcome to Wordle</h1>
+
+    <div id="choosePlayOption">
+        <button id="loginButton">Login</button>
+
+
+        <button id="playButton">Play as Guest</button>
+    </div>
+    <script>
+        // Login Button Click Event
+        document.getElementById('loginButton').addEventListener('click', function () {
+            // Redirect to the login page
+            window.location.href = '/login';
+        });
+
+        // Play as Guest Button Click Event
+        document.getElementById('playButton').addEventListener('click', function () {
+            // Redirect to the game page without login
+            window.location.href = '/game';
+        });
+    </script>
+</body>
+</html>
