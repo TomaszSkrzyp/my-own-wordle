@@ -12,7 +12,7 @@ const Board = ({ guesses, setGuesses, attempts }) => {
     // Handle changes in an individual input field
     const handleInputChange = (e, rowIndex, colIndex) => {
 
-        console.log(guesses[0]);
+        console.log(guesses);
         const inputValue = e.target.value.slice(0, 1);
         console.log(inputValue);
 
@@ -32,7 +32,7 @@ const Board = ({ guesses, setGuesses, attempts }) => {
                 nextInput.current.focus();
             }
         }
-        console.log(guesses[0]);
+        console.log(guesses);
     };
 
     // Handle backspace to move focus to previous input

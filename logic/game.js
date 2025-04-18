@@ -1,5 +1,5 @@
-let letterColors = 'bbbbbbbbbbbbbbbbbbbbbbbbbb'
-function checkWord(guess, answer) {
+let letterColors=Array(26).fill('b').join('');
+async function checkWord(guess, answer) {
     let feedback = [];
     let answerCopy = [...answer];  
     let letterColorsArray = letterColors.split('');
@@ -26,7 +26,24 @@ function checkWord(guess, answer) {
         }
     }
     letterColors = letterColorsArray.join('');
+    console.log("PRRRRRRR");
+    console.log(letterColors);
     return feedback.join('');  
 }
+function resetLetterColors() {
+    letterColors=Array(26).fill('b').join('')
+    console.log("colors:");
+    console.log(letterColors);
+    
 
-export { checkWord, letterColors };
+    return ;
+}
+function letterColorsGreen() {
+    letterColors=Array(26).fill('g').join('');
+    console.log("colors:");
+    console.log(letterColors);
+    
+
+    return ;
+}
+export { checkWord, letterColors,resetLetterColors,letterColorsGreen };

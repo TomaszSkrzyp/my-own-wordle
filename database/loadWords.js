@@ -10,5 +10,4 @@ async function loadAllWords() {
         return [];
     }
 }
-
 export { loadAllWords };
