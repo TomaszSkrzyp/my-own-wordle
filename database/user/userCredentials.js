@@ -14,14 +14,13 @@ async function checkUserCredentials(username, password) {
         const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
         
         const user = result.rows[0];
-        console.log(user);
         const isValid = await argon2.verify(user.password_hash, password);
 
         if (!isValid) {
             return { success: false, message: 'Invalid username or password.' };
         }
 
-        return { success: true, user };
+        return { success: true, username:user.userName, userId:user.id };
 
     } catch (error) {
         console.error('DB Error:', error);
@@ -39,9 +38,9 @@ async function checkUserExistance(username) {
 
         // Check if the username already exists
         if (result.rows.length > 0) {
-            return true;  // Username already taken
+            return true; 
         } else {
-            return false;  // Username is available
+            return false;  
         }
     } catch (error) {
         console.error('Database query error:', error);

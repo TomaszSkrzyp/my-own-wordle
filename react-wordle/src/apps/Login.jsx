@@ -19,12 +19,13 @@ const Login = () => {
         try {
             const res = await fetch('http://localhost:5000/api/login', {
                 method: 'POST',
+
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
             });
 
             const data = await res.json();
-            console.log(data);
             if (res.ok) {
                
                 navigate('/game'); // Login successful
@@ -32,10 +33,7 @@ const Login = () => {
                 alert(data.error);
             }
         } catch (err) {
-            console.log(username);
-            console.log(err);
             alert('Login failed');
-            console.error(err);
         }
     };
 

@@ -19,11 +19,9 @@
 	transform-style: preserve-3d;
 }
 
-.tile.flip .tile-inner {
-	transform: rotateY(180deg);
-}
-
-.tile-front, .tile-back {
+/* Already existing */
+.tile-front,
+.tile-back {
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -33,32 +31,33 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	backface-visibility: hidden;
+	backface-visibility: hidden; /* Keep this */
 	border-radius: 8px;
 }
 
 .tile-front {
 	background-color: #121213;
 	color: white;
+	transform: rotateY(0deg);
+	z-index: 2;
 }
 
 .tile-back {
 	background-color: #3a3a3c;
 	transform: rotateY(180deg);
 	color: white;
+	z-index: 1;
 }
 
-.green {
-	background-color: #6aaa64; /* Correct color for green */
+/* Flip trigger */
+.tile.flip .tile-inner {
+	transform: rotateY(180deg);
+}
+.tile-input {
+	caret-color: transparent; /* Hide the blinking cursor */
 }
 
-.yellow {
-	background-color: #c9b458; /* Updated to Wordle's yellow */
-}
 
-.gray {
-	background-color: #787c7e; /* Updated to Wordle's gray */
-}
 
 [id^="boardRowContainer"] {
 	display: flex;
@@ -112,4 +111,26 @@ body {
 	align-items: center;
 	justify-content: center;
 	height: 100vh;
+}
+
+.logout-button {
+	margin-top: 20px;
+	padding: 15px 30px;
+	font-size: 18px;
+	background-color: #3a3a3c;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+	.logout-button:hover {
+		background-color: #505052;
+	}
+.logout-container {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	z-index: 1000;
 }

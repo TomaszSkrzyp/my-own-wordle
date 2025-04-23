@@ -9,23 +9,52 @@ import { validatePassword, validateUsername, validateEmail } from '../logic/vali
 //api/login/
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
+
     if (!validateUsername(username)) {
         return res.status(400).json({ message: 'Invalid username format.' });
     }
 
-
     if (!validatePassword(password)) {
         return res.status(400).json({ message: 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.' });
     }
+
     const result = await checkUserCredentials(username, password);
-    console.log(result);
     if (!result.success) {
         return res.status(401).json({ error: result.message });
     }
-
-    res.json({ message: 'Login successful' });
+    // save user info to session
+    req.session.user = {
+        username: username,
+        userId: result.userId 
+    };
+    console.log("Session ID:", req.sessionID);
+    return res.json({ message: 'Login successful' });
 });
-router.post('/register', async (req, res) => {
+//api/logout
+router.post('/logout', async(req, res) => {
+        req.session.destroy(err => {
+            if (err) {
+                console.error("Error destroying session:", err);
+                return res.status(500).json({ message: 'Logout failed' });
+            }
+
+            res.clearCookie('connect.sid', {
+                path: '/',          // matches the session cookie's path
+                httpOnly: true,
+                sameSite: 'lax',    // or 'none' if cross-site
+                secure: false       // true if using HTTPS
+            });
+
+            res.json({ message: 'Logged out successfully' });
+        });
+});
+
+
+
+
+
+//api/reguster
+ router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
     if (!validateUsername(username)) {
@@ -42,23 +71,22 @@ router.post('/register', async (req, res) => {
 
     const usernameUsed = await checkUserExistance(username);
     const emailUsed = await checkEmailUsed(email);
-    console.log(usernameUsed);
-    console.log(usernameUsed);
-    console.log("ONFIJNSFDJODM");
-    if ( usernameUsed) {
-        
+
+    if (usernameUsed) {
         return res.status(409).json({ message: 'This username is already in use.' });
     }
 
-    if ( emailUsed) {
+    if (emailUsed) {
         return res.status(409).json({ message: 'This e-mail is already in use.' });
     }
-    
-    //Registration result
-    const regRes= await createNewUser(username, email, password);
+
+    const regRes = await createNewUser(username, email, password);
     if (!regRes.success) {
         return res.status(401).json({ error: regRes.message });
     }
+
+   
+
     return res.status(201).json({ message: 'Registration successful.' });
 });
 export default router;

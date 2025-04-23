@@ -1,82 +1,127 @@
-import express from 'express'; 
-import retrieveTodays from '../database/thisDayWord.js';
-import { checkWord, letterColors,resetLetterColors,letterColorsGreen } from '../logic/game.js';
+import express from 'express';
 
-import { isValidWord } from '../logic/wordService.js';
-import initGameState from '../logic/initGameState.js';
+import retrieveTodays from '../database/thisDayWord.js';
+import { checkWord,letterColorsGreen } from '../logic/game.js';
+import { isValidWord } from '../logic/wordListService.js';
+import { initGameState } from '../logic/initGameState.js';
+import getStateFromDB from '../database/gameStates/loadGame.js';
+import saveStateToDB from '../database/gameStates/writeGame.js';
+
+import solve from '../solver/mainSolver.js';
+
+import isToday from '../database/gameStates/isToday.js';
+import { colorEnum } from '../utils/colorEnum.js'
 
 const router = express.Router();
 
-
-// Endpoint to reset the game
+// Reset game
 router.post('/reset', (req, res) => {
-  req.session.gameState = initGameState();
-  res.status(200).json({ message: 'Game state reset' });
-});
-
-
-router.get('/state', (req, res) => {
-  if (!req.session.gameState) {
     req.session.gameState = initGameState();
-  }
-  res.json(req.session.gameState);
+    res.status(200).json({
+        message: 'Game state reset',
+        loggedIn: !!req.session.user,
+        user: req.session.user || null
+    });
 });
+router.get('/state', async (req, res) => {
+    console.log("Session ID:", req.sessionID);
+    console.log("Session :", req.session);
+   
 
+        // Logged-in user: try to load saved game state
+        if (req.session.user && req.session.user.userId) {
+            console.log("User is logged in — trying to load saved state");
 
+            try {
+                const savedGameState = await getStateFromDB(req.session.user.userId);
+                if (savedGameState.data && isToday(new Date(savedGameState.updated_at))) {
+                    
+                    console.log("Found saved game state, loading into session");
+                    
+                    req.session.gameState = savedGameState.data;
+                } else {
+                    console.log("No saved game state found — initializing new one");
+                    req.session.gameState = initGameState();
+                }
+            } catch (error) {
+                console.error("Error loading game state from DB:", error);
+                req.session.gameState = initGameState();
+            }
 
-router.post('/check', async (req, res) => {
-   const { guess } = req.body;
-  if (!guess) {
-    return res.status(400).json({ error: 'Missing guess' });
-  }
-
-  if (!req.session.gameState) {
-    return res.status(400).json({ error: 'Game not initialized' });
-  }
-
-  const gameState = req.session.gameState;
-  const { guesses, attempts,oldLetterColors } = gameState;
-
-  console.log('Current session game state:', req.session.gameState);
-
-  try {
-    const isValid = await isValidWord(guess);
+        } else {
+            // Guest user — start fresh
+            
+            if (!req.session.gameState) {
+                console.log("Guest user — initializing new game state");
+                req.session.gameState = initGameState();
+            }
+        }
     
-    if (!isValid) {
-      return res.status(400).json({ error: 'Invalid word' });
-    }
-
-    const todayWord = await retrieveTodays();
-    const result = await checkWord(guess, todayWord);
-
-    // Update game state
-    const colorEnum = { g: 'green', b: 'gray', y: 'yellow' };
-    const updatedGuesses = [...guesses];
-    updatedGuesses[attempts] = updatedGuesses[attempts].map((letter, index) => ({
-      letter:guess[index],
-      color:  colorEnum[result[index]],
-      flipped: true,
-    }));
-    console.log(updatedGuesses);
-    gameState.guesses = updatedGuesses;
-    gameState.attempts = attempts + 1;
-
-    if (result === 'ggggg') {
-        letterColorsGreen();
-      gameState.gameOver = true;
-    }
-
-    req.session.gameState = gameState;
-
-    res.json({
-      result,
-      updatedLetterColors: letterColors,
-      gameState,
-    })
-    console.log(gameState);
-  } catch (error) {
-    console.error('Error checking word:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    res.status(200).json({
+        loggedIn: !!req.session.user,
+        user: req.session.user || null,
+        gameState: req.session.gameState
+    });
 });
+
+// Handle a guess
+router.post('/check', async (req, res) => {
+    console.log("Session ID:", req.sessionID);
+
+    console.log("Session :", req.session);
+    const { guess } = req.body;
+    if (!guess || req.session.gameOver) {
+        return res.status(400).json({ error: 'Missing guess' });
+    }
+
+    if (!req.session.gameState) {
+        return res.status(400).json({ error: 'Game not initialized' });
+    }
+
+    const gameState = req.session.gameState;
+    const { guesses, attempts } = gameState;
+    try {
+        const isValid =  isValidWord(guess);
+        if (!isValid) {
+            return res.status(400).json({ error: 'Invalid word' });
+        }
+
+        const todayWord = await retrieveTodays();
+        const result = await checkWord(guess, todayWord, gameState.letterColors);
+        console.log(result);
+        // Update guesses
+        const updatedGuesses = [...guesses];
+        updatedGuesses[attempts] = updatedGuesses[attempts].map((_, index) => ({
+            letter: guess[index],
+            color: result.feedback[index],
+            flipped: true,
+        }));
+        gameState.guesses = updatedGuesses;
+        
+        const solveResults = solve(gameState.guesses.slice(0, attempts+1));
+        gameState.attempts = attempts + 1;
+       
+        if (result.feedback === 'ggggg') {
+            result.letterColors=letterColorsGreen();
+            gameState.gameOver = true;
+        }
+        req.session.gameState.letterColors = result.letterColors;
+        req.session.gameState = gameState;
+        if(req.session.user && req.session.user.userId) {
+            await saveStateToDB(req.session.user.userId, gameState);
+        }
+        res.json({
+            result:result.feedback,
+            updatedLetterColors:result.letterColors,
+            gameState,
+            loggedIn: !!req.session.user,
+            user: req.session.user || null
+        });
+
+    } catch (error) {
+        console.error('Error checking word:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 export default router;

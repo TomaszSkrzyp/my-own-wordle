@@ -6,116 +6,195 @@ import Board from '../components/Board';
 import Modal from '../components/Modal';
 import LetterDisplay from '../components/LetterDisplay';
 
+import { useNavigate } from 'react-router-dom';
+
 const App = () => {
-  const [guesses, setGuesses] = useState(Array(6).fill(Array(5).fill('')));
-  const [storedAttempts, setAttempts] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [asciiToColor, setAscii] = useState(Array(26).fill('b'));
-  const [modalMessage, setModalMessage] = useState('');
-  const [isModalVisible, setModalVisible] = useState(false);
 
-  // Fetch initial game state from server
-  useEffect(() => {
-    const fetchGameState = async () => {
-      const response =await fetch('http://localhost:5000/api/word/state', {
-         method: 'GET',
-        credentials: 'include',
-        });
-    
-      const data = await response.json();
-      console.log(data);
-      setGuesses(data.guesses);
-      setAttempts(data.attempts);
-      setGameOver(data.gameOver);
-      setAscii(data.letterColors);
-    };
+    const [guesses, setGuesses] = useState(Array(6).fill(Array(5).fill('')));
+    const [storedAttempts, setAttempts] = useState(0);
+    const [gameOver, setGameOver] = useState(false);
+    const [asciiToColor, setAscii] = useState(Array(26).fill('o'));
+    const [modalMessage, setModalMessage] = useState('');
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-    fetchGameState();
-  }, []);
-    
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            submitGuess();
-        }
-    };
-    // Add event listener when component mounts
+
+    const navigate = useNavigate();
+
     useEffect(() => {
-        window.addEventListener('keydown', handleKeyPress);
+        const fetchGameState = async () => {
+            const response = await fetch('http://localhost:5000/api/word/state', {
+                method: 'GET',
+                credentials: 'include',
+            });
 
-        // Cleanup when component unmounts
-        return () => {
-            window.removeEventListener('keydown', handleKeyPress);
+            const data = await response.json();
+            console.log("dtatshadsu");
+            console.log(data);
+            setGuesses(data.gameState.guesses);
+            setAttempts(data.gameState.attempts);
+            setGameOver(data.gameState.gameOver);
+            setAscii(data.gameState.letterColors);
+            setIsLoggedIn(data.loggedIn);
         };
+
+        fetchGameState();
     }, []);
-  const submitGuess = async () => {
- 
-    const currentGuess = guesses[storedAttempts].join('').toLowerCase();
-    console.log("EIUFBIJNEF");
-    console.log(currentGuess);
-    
-    // Send guess to server
-   const response = await fetch('http://localhost:5000/api/word/check', {
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            const key = e.key;
+            handleLetterInput(key);
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [guesses, storedAttempts, gameOver]);
+    const handleLetterInput = (key) => {
+        console.log(key);
+        if (gameOver) return;
+
+        // Copy guesses so we can mutate
+        const updatedGuesses = guesses.map(row => [...row]);
+        const row = updatedGuesses[storedAttempts];
+
+        if (key === 'Backspace') {
+            const lastFilled = row.slice().reverse().findIndex(c => c !== '');
+            const index = lastFilled !== -1 ? 4 - lastFilled : 4;
+            row[index] = '';
+        } else if (key === 'Enter') {
+            submitGuess();
+
+        } else if (/^[a-zA-Z]$/.test(key)) {
+            // Find the next empty spot
+            const index = row.findIndex(c => c === '');
+            if (index !== -1) {
+                row[index] = key.toUpperCase();
+            }
+        }
+        console.log(updatedGuesses);
+        updatedGuesses[storedAttempts] = row;
+        setGuesses(updatedGuesses);
+    };
+
+    const submitGuess = async () => {
+        console.log("Enter pressed:", guesses);
+        console.log("Button clicked:", guesses[storedAttempts]);
+        const currentGuess = guesses[storedAttempts].join('').toLowerCase();
+        console.log("Sent guess");
+        console.log(currentGuess);
+
+
+        // Send guess to server
+        const response = await fetch('http://localhost:5000/api/word/check', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            
-        credentials: 'include',
-            body: JSON.stringify({ guess : currentGuess }),
+
+            credentials: 'include',
+            body: JSON.stringify({ guess: currentGuess }),
         });
 
-    const data = await response.json();
-    if (data.error) {
-      showModal(data.error);
-    } else {
-      setAscii(data.updatedLetterColors);
-      setGuesses(data.gameState.guesses);
-      setAttempts(data.gameState.attempts);
-      setGameOver(data.gameState.gameOver);
+        const data = await response.json();
+        if (data.error) {
+            showModal(data.error);
+        } else {
+            setAscii(data.gameState.letterColors);
+            setGuesses(data.gameState.guesses);
+            setAttempts(data.gameState.attempts);
+            setGameOver(data.gameState.gameOver);
+        }
+        if (data.result === 'ggggg') {
+            showModal('You won!');
+        } else if (data.gameState.attempts >= 5) {
+            showModal('You ran out of guesses!');
+        }
+    };
 
-      if (data.result === 'ggggg') {
-        showModal('You won!');
-      }
-    }
-  };
 
-  const showModal = (message) => {
-    setModalMessage(message);
-    setModalVisible(true);
-    setTimeout(() => {
-      setModalVisible(false);
-      setModalMessage('');
-    }, 3500);
-  };
+    const showModal = (message) => {
+        setModalMessage(message);
+        setModalVisible(true);
+        setTimeout(() => {
+            setModalVisible(false);
+            setModalMessage('');
+        }, 3500);
+    };
 
-const resetGame = () => {
-  // Reset all the relevant state values
-  setGuesses(Array(6).fill(Array(5).fill('')));
-  setAttempts(0);
-  setGameOver(false);
-  setAscii(Array(26).fill('b'));
-};
-const resetGameOnServer = async () => {
-  await fetch('http://localhost:5000/api/word/reset', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include', // Ensure session is included
-  });
+    const resetGame = () => {
+        // Reset all the relevant state values
+        setGuesses(Array(6).fill(Array(5).fill('')));
+        setAttempts(0);
+        setGameOver(false);
+        setAscii(Array(26).fill('o'));
+    };
 
-  // Optionally reset local state after the server responds
-  resetGame();
-};
-  return (
-    <div className="App">
-      <h1>Wordle Game</h1>
-      <Modal message={modalMessage} onClose={() => setModalVisible(false)} />
-      <Board guesses={guesses} setGuesses={setGuesses} attempts={storedAttempts} />
-      <LetterDisplay asciiToColor={asciiToColor} />
-      <button id="submitGuess" type="submit" onClick={submitGuess}>Enter</button>
-    </div>
-  );
-};
+    const handleLogout = async () => {
+        await fetch('http://localhost:5000/api/login/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
 
+
+        navigate('/');
+    };
+    const resetGameOnServer = async () => {
+        await fetch('http://localhost:5000/api/word/reset', {
+            method: 'POST',
+            credentials: 'include', // Ensure session is included
+            headers: {
+                'Content-Type': 'application/json',
+            },
+
+        });
+
+    };
+    return (
+        <div className="App">
+            <div className="logout-container">
+                {isLoggedIn && (
+                    <button
+                        className="logout-button"
+                        onClick={() => setShowLogoutConfirm(true)}
+                    >
+                        Logout
+                    </button>
+                )}
+            </div>
+
+            <h1>Wordle Game</h1>
+
+            {showLogoutConfirm ? (
+                <Modal
+                    message="Are you sure you want to log out?"
+                    onConfirm={() => {
+                        handleLogout();
+                        setShowLogoutConfirm(false);
+                    }}
+                    onClose={() => setShowLogoutConfirm(false)}
+                    confirmLabel="Logout"
+                    cancelLabel="Cancel"
+                />
+            ) :  (
+                <Modal
+                    message={modalMessage}
+                    onClose={() => setModalVisible(false)}
+                />
+            ) }
+            <Board
+                guesses={guesses}
+                setGuesses={setGuesses}
+                attempts={storedAttempts}
+                submitGuess={submitGuess}
+                gameOver={gameOver}
+            />
+
+            <LetterDisplay
+                asciiToColor={asciiToColor}
+                onKeyClick={handleLetterInput}
+            />
+        </div>
+    );
+}
 export default App;

@@ -1,0 +1,71 @@
+import { getWordList } from '../logic/wordListService.js'
+function findViableWords(greens, yellows, blacks, wordList = getWordList()) {
+    return wordList.filter(word => {
+        //check green letters
+        for (const letter in greens) {
+            for (const pos of greens[letter]) {
+                if (word[pos] !== letter) return false;
+            }
+        }
+
+        // check yellow letters
+        for (const letter in yellows) {
+            if (!word.includes(letter)) return false;
+            for (const pos of yellows[letter]) {
+                if (word[pos] === letter) return false;
+            }
+        }
+
+        // check black letters: must NOT be anywhere in the word
+        for (let i = 0; i < word.length; i++) {
+            if (blacks.has(word[i])) return false;
+        }
+       
+        return true;
+    });
+}
+function findLetterRules(guesses) {
+    const greens = {};
+    const yellows = {};
+    const blacks = new Set();
+
+    for (let row of guesses) {
+        const seenGreenOrYellow = new Set();
+
+        for (let i = 0; i < row.length; i++) {
+            const tile = row[i];
+            const letter = tile.letter;
+
+            if (tile.color === 'g') {
+                if (!greens[letter]) greens[letter] = [];
+                greens[letter].push(i);
+                seenGreenOrYellow.add(letter);
+            } else if (tile.color === 'y') {
+                if (!yellows[letter]) yellows[letter] = new Set();
+                yellows[letter].add(i);
+                seenGreenOrYellow.add(letter);
+            }
+        }
+
+        for (let i = 0; i < row.length; i++) {
+            const tile = row[i];
+            const letter = tile.letter;
+            if (tile.color === 'b' && !seenGreenOrYellow.has(letter)) {
+                blacks.add(letter);
+            }
+        }
+    }
+
+    return {
+        greenLetters: greens,
+        yellowLetters: yellows,
+        blackLetters: blacks
+    };
+}
+function solver(guesses) {
+    const { greenLetters, yellowLetters, blackLetters } = findLetterRules(guesses);
+    const possibleWordList = findViableWords(greenLetters, yellowLetters, blackLetters);
+    console.log(possibleWordList);
+    return "fdsd";
+}
+export default solver;

@@ -1,0 +1,18 @@
+import { initGameState} from '../../logic/initGameState.js';
+
+import pool from '../db.js';
+async function resetStatesToDB() {
+    
+    try {
+        const defaultState = initGameState();
+        await pool.query(`UPDATE game_states
+        SET game_data = $1, updated_at = NOW();
+    `, [ defaultState]);
+
+        console.log(` Game states reset`);
+    } catch (error) {
+        console.error('Failed to reset game state in DB:', error);
+    }
+    console.log("RESET");
+}
+export default resetStatesToDB;

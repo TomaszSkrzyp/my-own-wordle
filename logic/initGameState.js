@@ -1,8 +1,14 @@
+function initEmptyGuesses() {
+    return Array(6).fill(Array(5).fill(''));
+
+}; 
+
 const initGameState = () => ({
-  guesses: Array(6).fill(Array(5).fill('')),
+    
+  guesses: initEmptyGuesses(),
   attempts: 0,
   gameOver: false,
-  letterColors: Array(26).fill('b'), // Initial color (gray)
+    letterColors: Array(26).fill('o').join(''), // Initial color (gray)
 });
 
-export default initGameState;
+export { initGameState, initEmptyGuesses };

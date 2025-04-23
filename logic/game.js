@@ -1,5 +1,5 @@
-let letterColors=Array(26).fill('b').join('');
-async function checkWord(guess, answer) {
+
+async function checkWord(guess, answer,letterColors) {
     let feedback = [];
     let answerCopy = [...answer];  
     let letterColorsArray = letterColors.split('');
@@ -16,34 +16,36 @@ async function checkWord(guess, answer) {
     for (let i = 0; i < 5; i++) {
         if (feedback[i] !== 'g' && answerCopy.includes(guess[i])) {
 
-
-            feedback[i] = 'y';  
+            feedback[i] = 'y';
             answerCopy[answerCopy.indexOf(guess[i])] = null;
+            if (letterColorsArray[guess[i].charCodeAt(0) - 'a'.charCodeAt(0)] != 'g') {
+                
 
-            letterColorsArray[guess[i].charCodeAt(0) - 'a'.charCodeAt(0)] = 'y';
+                letterColorsArray[guess[i].charCodeAt(0) - 'a'.charCodeAt(0)] = 'y';
+            }
         } else if (feedback[i] !== 'g') {
             feedback[i] = 'b'; 
+
+            letterColorsArray[guess[i].charCodeAt(0) - 'a'.charCodeAt(0)] = 'b';
         }
     }
     letterColors = letterColorsArray.join('');
-    console.log("PRRRRRRR");
-    console.log(letterColors);
-    return feedback.join('');  
+    return { feedback: feedback.join(''), letterColors: letterColors }
 }
-function resetLetterColors() {
-    letterColors=Array(26).fill('b').join('')
+function letterColorsGrey() {
+    let letterColors=Array(26).fill('o').join('')
     console.log("colors:");
     console.log(letterColors);
     
 
-    return ;
+    return letterColors ;
 }
 function letterColorsGreen() {
-    letterColors=Array(26).fill('g').join('');
+    let letterColors=Array(26).fill('g').join('');
     console.log("colors:");
     console.log(letterColors);
     
 
-    return ;
+    return letterColors ;
 }
-export { checkWord, letterColors,resetLetterColors,letterColorsGreen };
+export { checkWord, letterColorsGrey,letterColorsGreen };

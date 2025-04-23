@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const Board = ({ guesses, setGuesses, attempts }) => {
+import { colorEnum } from '../helpers/colorEnum.js'
+const Board = ({ guesses, setGuesses, attempts,submitGuess,gameOver }) => {
     const inputRefs = useRef([]); // For managing focus on input fields
     ;
     // Initialize the refs array only once
@@ -8,7 +9,20 @@ const Board = ({ guesses, setGuesses, attempts }) => {
             inputRefs.current = Array(6).fill().map(() => Array(5).fill().map(() => React.createRef()));
         }
     
+    useEffect(() => {
+    if (gameOver) return;
 
+    const row = guesses[attempts];
+    if (!row) return;
+
+    const firstEmptyIndex = row.findIndex(letter => letter === '');
+    const focusIndex = firstEmptyIndex !== -1 ? firstEmptyIndex : 4; // fallback to last box if all filled
+
+    const inputToFocus = inputRefs.current[attempts][focusIndex];
+    if (inputToFocus && inputToFocus.current) {
+        inputToFocus.current.focus();
+    }
+}, [guesses, attempts, gameOver]);
     // Handle changes in an individual input field
     const handleInputChange = (e, rowIndex, colIndex) => {
 
@@ -34,17 +48,20 @@ const Board = ({ guesses, setGuesses, attempts }) => {
         }
         console.log(guesses);
     };
-
-    // Handle backspace to move focus to previous input
     const handleKeyDown = (e, rowIndex, colIndex) => {
+        console.log(e.key);
         const isBackspace = e.key === "Backspace";
+        const isEnter = e.key === "Enter";
         const currentValue = guesses[rowIndex][colIndex];
 
         if (isBackspace && currentValue === "" && colIndex > 0) {
-            // Move focus to previous input if the current one is empty
             inputRefs.current[rowIndex][colIndex - 1].current.focus();
         }
+
+        
+
     };
+    
 
     return (
         <div id="boardContainer">
@@ -57,17 +74,16 @@ const Board = ({ guesses, setGuesses, attempts }) => {
 
                                 <div className="tile-front">
                                     <input
-                                        ref={inputRefs.current[rowIndex][colIndex]} // Attach ref for each input
+                                        ref={inputRefs.current[rowIndex][colIndex]}
                                         type="text"
-                                        maxLength="1"
                                         className="tile-input"
                                         value={tile}
-                                        onChange={(e) => handleInputChange(e, rowIndex, colIndex)} // Handle text input
-                                        onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)} // Handle key events like Backspace
-                                        disabled={rowIndex > attempts} // Disable inputs in rows after the current attempt
+                                        readOnly //!!!!!. i handle the input myself with handle letter input
+                                        onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)}
+                                        disabled={rowIndex > attempts || gameOver}
                                     />
                                 </div>
-                                <div className="tile-back" style={{ backgroundColor: tile.color }}>
+                                <div className="tile-back" style={{ backgroundColor: colorEnum[tile.color] || 'gray' }}>
                                     {tile.letter ? tile.letter.toUpperCase() : ''}
                                 </div>
 

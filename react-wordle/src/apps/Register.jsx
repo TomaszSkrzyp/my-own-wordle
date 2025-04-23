@@ -32,8 +32,11 @@ const Register = () => {
         try {
             const res = await fetch('http://localhost:5000/api/login/register', {
                 method: 'POST',
+
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, email, password }),
+
             });
 
             const data = await res.json();

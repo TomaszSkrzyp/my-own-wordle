@@ -1,9 +1,17 @@
 
-const Modal = ({ message, onClose }) => {
+const Modal = ({ message, onClose ,onConfirm,confirmLabel,cancelLabel}) => {
     return (
         <div className="modal-overlay" style={{ display: message ? 'flex' : 'none' }} onClick={onClose}>
             <div className="modal-content">
                 <p>{message}</p>
+                <div className="modal-buttons">
+                    {onConfirm && (
+                        <>
+                            <button onClick={onConfirm}>{confirmLabel}</button>
+                            <button onClick={onClose}>{cancelLabel}</button>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );
