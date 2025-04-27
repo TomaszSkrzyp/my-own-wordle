@@ -22,36 +22,15 @@ const Board = ({ guesses, setGuesses, attempts,submitGuess,gameOver }) => {
     if (inputToFocus && inputToFocus.current) {
         inputToFocus.current.focus();
     }
-}, [guesses, attempts, gameOver]);
-    // Handle changes in an individual input field
-    const handleInputChange = (e, rowIndex, colIndex) => {
-
-        console.log(guesses);
-        const inputValue = e.target.value.slice(0, 1);
-        console.log(inputValue);
-
-        setGuesses((prevGuesses) => {
-            const newGuesses = [...prevGuesses];
-            const row = [...newGuesses[rowIndex]];  // Copy the row
-            row[colIndex] = inputValue;  // Update the specific tile
-
-            newGuesses[rowIndex] = row;  // Assign the updated row back
-            return newGuesses;  // Return the updated state
-        });;
-        
-        // Focus next input if there is one
-        if (inputValue && colIndex < 4) {
-            const nextInput = inputRefs.current[rowIndex][colIndex + 1];
-            if (nextInput && nextInput.current) {
-                nextInput.current.focus();
-            }
-        }
-        console.log(guesses);
-    };
+    }, [guesses, attempts, gameOver]);
     const handleKeyDown = (e, rowIndex, colIndex) => {
         console.log(e.key);
+        console.log("sadfs");
+        console.log(gameOver);
+        if (gameOver) {
+            return;
+        }
         const isBackspace = e.key === "Backspace";
-        const isEnter = e.key === "Enter";
         const currentValue = guesses[rowIndex][colIndex];
 
         if (isBackspace && currentValue === "" && colIndex > 0) {
@@ -77,7 +56,7 @@ const Board = ({ guesses, setGuesses, attempts,submitGuess,gameOver }) => {
                                         ref={inputRefs.current[rowIndex][colIndex]}
                                         type="text"
                                         className="tile-input"
-                                        value={tile}
+                                        value={!tile.flipped ? (tile || '') : ''}
                                         readOnly //!!!!!. i handle the input myself with handle letter input
                                         onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)}
                                         disabled={rowIndex > attempts || gameOver}

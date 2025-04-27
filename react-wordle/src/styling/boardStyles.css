@@ -113,9 +113,8 @@ body {
 	height: 100vh;
 }
 
-.logout-button {
-	margin-top: 20px;
-	padding: 15px 30px;
+.logout-button, .solve-button {
+	padding: 15px 30px; 
 	font-size: 18px;
 	background-color: #3a3a3c;
 	color: white;
@@ -123,14 +122,49 @@ body {
 	border-radius: 8px;
 	cursor: pointer;
 	transition: background-color 0.3s ease;
+	width: 200px; 
+	height: 50px; 
+	display: flex;
+	justify-content: center; 
+	align-items: center;
 }
 
-	.logout-button:hover {
+	.logout-button:hover, .solve-button:hover {
 		background-color: #505052;
 	}
 .logout-container {
 	position: absolute;
-	top: 20px;
-	right: 20px;
+	top: 0px;
+	right: 50px;
 	z-index: 1000;
 }
+.solve-container {
+	position: absolute;
+	top: 45%;
+	right: 300px;
+	transform: translateY(-50%);
+	z-index: 1000;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.solve-display {
+	background-color: #333;
+	color: white;
+	padding: 20px;
+	border-radius: 10px;
+	text-align: center;
+	width: 200px;
+	position: relative;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.solve-result {
+	position: absolute;
+	top: 100%;
+	margin-top: 10px;
+	width: max-content;
+}
+	.solve-result.show {
+		opacity: 1;
+		transform: translateX(0); /* Move to the original position */
+	}

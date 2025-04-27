@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "client": "vite",
-    "server": "node ../server.js"
+    "server": "node ../backend-wordle/server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

@@ -4,7 +4,7 @@ const LetterDisplay = ({ asciiToColor,onKeyClick }) => {
     const keyboardRows = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']
+    ['Enter','Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']
 ];
 
     // Converts the asciiToColor string into a map like { a: 'gray', b: 'gray', ..., z: 'green' }

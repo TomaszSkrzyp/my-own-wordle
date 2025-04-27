@@ -28,11 +28,11 @@ const updateLastRunTime = (date) => {
 
 const runDailyTask = async () => {
     try {
-        console.log('Running daily reset task...');
         await setRandom();
+        console.log('Running daily reset task...');
+        await resetStatesFromDB();
 
         console.log('Daily reset completed.');
-        await resetStatesFromDB();
     } catch (error) {
         console.error('Error during daily reset:', error);
     }

@@ -7,10 +7,9 @@ import { initGameState } from '../logic/initGameState.js';
 import getStateFromDB from '../database/gameStates/loadGame.js';
 import saveStateToDB from '../database/gameStates/writeGame.js';
 
-import solve from '../solver/mainSolver.js';
+import solver from '../solver/mainSolver.js';
 
 import isToday from '../database/gameStates/isToday.js';
-import { colorEnum } from '../utils/colorEnum.js'
 
 const router = express.Router();
 
@@ -87,6 +86,15 @@ router.post('/check', async (req, res) => {
         }
 
         const todayWord = await retrieveTodays();
+        console.log(todayWord);
+
+        console.log(todayWord);
+
+        console.log(todayWord);
+
+        console.log(todayWord);
+        console.log(todayWord);
+
         const result = await checkWord(guess, todayWord, gameState.letterColors);
         console.log(result);
         // Update guesses
@@ -96,17 +104,20 @@ router.post('/check', async (req, res) => {
             color: result.feedback[index],
             flipped: true,
         }));
-        gameState.guesses = updatedGuesses;
-        
-        const solveResults = solve(gameState.guesses.slice(0, attempts+1));
-        gameState.attempts = attempts + 1;
-       
-        if (result.feedback === 'ggggg') {
-            result.letterColors=letterColorsGreen();
+        if (result.feedback === 'ggggg' || attempts+1==6) {
             gameState.gameOver = true;
+            if (result.feedback === 'ggggg') {
+
+                result.letterColors = letterColorsGreen();
+            }
         }
-        req.session.gameState.letterColors = result.letterColors;
+
+
+        gameState.guesses = updatedGuesses;
+        gameState.attempts = attempts + 1;
+        gameState.letterColors = result.letterColors;
         req.session.gameState = gameState;
+
         if(req.session.user && req.session.user.userId) {
             await saveStateToDB(req.session.user.userId, gameState);
         }
@@ -123,5 +134,20 @@ router.post('/check', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+// Handle a guess
+router.get('/solve', async (req, res) => {
+    console.log("Session ID:", req.sessionID);
 
+    console.log("Session :", req.session);
+
+    const gameState = req.session.gameState;
+
+
+    const solveResults = solver(gameState.guesses.slice(0, gameState.attempts));
+    console.log(solveResults);
+    res.json({
+        bestWord: solveResults.word,
+        numberOfWords: solveResults.number,
+    });
+});
 export default router;

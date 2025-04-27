@@ -65,7 +65,7 @@ function findLetterRules(guesses) {
 function solver(guesses) {
     const { greenLetters, yellowLetters, blackLetters } = findLetterRules(guesses);
     const possibleWordList = findViableWords(greenLetters, yellowLetters, blackLetters);
-    console.log(possibleWordList);
-    return "fdsd";
+    console.log(possibleWordList[0]);
+    return { word: possibleWordList[0], number: possibleWordList.length};
 }
 export default solver;

@@ -31,3 +31,16 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Slightly deeper shadow for more contrast */
     transition: transform 0.3s ease; /* Smooth scaling transition */
 }
+.modal-choice {
+    width: 100px;
+    padding: 15px 15px;
+    margin: 15px 0;
+    background-color: #538d4e;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}

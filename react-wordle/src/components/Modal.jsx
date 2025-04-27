@@ -7,8 +7,8 @@ const Modal = ({ message, onClose ,onConfirm,confirmLabel,cancelLabel}) => {
                 <div className="modal-buttons">
                     {onConfirm && (
                         <>
-                            <button onClick={onConfirm}>{confirmLabel}</button>
-                            <button onClick={onClose}>{cancelLabel}</button>
+                            <button className="modal-choice" onClick={onConfirm}>{confirmLabel}</button>
+                            <button className="modal-choice" onClick={onClose}>{cancelLabel}</button>
                         </>
                     )}
                 </div>

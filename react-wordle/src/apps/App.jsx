@@ -5,6 +5,7 @@ import '../styling/displayStyles.css';
 import Board from '../components/Board';
 import Modal from '../components/Modal';
 import LetterDisplay from '../components/LetterDisplay';
+import SolveDisplay from '../components/SolveDisplay';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +19,9 @@ const App = () => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+    const [solveResult, setSolveResult] = useState(null); 
+
 
 
     const navigate = useNavigate();
@@ -41,6 +45,7 @@ const App = () => {
 
         fetchGameState();
     }, []);
+
     useEffect(() => {
         const handleKeyDown = (e) => {
             const key = e.key;
@@ -50,10 +55,27 @@ const App = () => {
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [guesses, storedAttempts, gameOver]);
-    const handleLetterInput = (key) => {
-        console.log(key);
-        if (gameOver) return;
 
+    const fetchSolve = async () => {
+        if (solveResult) {
+            // If already shown, hide it
+            setSolveResult(null);
+        } else {
+            // Fetch and show
+            const response = await fetch('http://localhost:5000/api/word/solve', {
+                method: 'GET',
+                credentials: 'include',
+            });
+            const data = await response.json();
+            setSolveResult({ word: data.bestWord, number: data.numberOfWords });
+        }
+    };
+
+
+    const handleLetterInput = (key) => {
+        
+        if (gameOver) return;
+        console.log(key);
         // Copy guesses so we can mutate
         const updatedGuesses = guesses.map(row => [...row]);
         const row = updatedGuesses[storedAttempts];
@@ -107,9 +129,13 @@ const App = () => {
         }
         if (data.result === 'ggggg') {
             showModal('You won!');
-        } else if (data.gameState.attempts >= 5) {
+        } else if (data.gameState.attempts > 5) {
             showModal('You ran out of guesses!');
         }
+        if (solveResult.word) {
+            fetchSolve();
+        }
+        
     };
 
 
@@ -194,6 +220,17 @@ const App = () => {
                 asciiToColor={asciiToColor}
                 onKeyClick={handleLetterInput}
             />
+            <div className="solve-container">
+                <button className="solve-button" onClick={fetchSolve}>
+                    {solveResult ? 'Hide hint' : 'Show hint'}
+                </button>
+
+                {solveResult && (
+                    <div className="solve-result">
+                        <SolveDisplay word={solveResult.word} number={solveResult.number} />
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
