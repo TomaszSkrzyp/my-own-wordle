@@ -14,7 +14,7 @@ function getWordList() {
 }
 
 function isValidWord(word) {
-
+    // check if the word is 5-letter long 
     const isFiveLetterWord = /^[a-zA-Z]{5}$/.test(word);
     console.log(isFiveLetterWord);
     // Check if the word exists in the wordList
@@ -22,7 +22,6 @@ function isValidWord(word) {
     const isInWordList =getWordList().includes(word.toLowerCase());
    
 
-    // Return true if both conditions are satisfied
     return isFiveLetterWord && isInWordList;
 }
 

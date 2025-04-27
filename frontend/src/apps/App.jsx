@@ -176,8 +176,15 @@ const App = () => {
         });
 
     };
+    const navigateHome = () => {
+        navigate('/');  // Adjust the route if necessary
+    };
     return (
         <div className="App">
+            <button className="home-button" onClick={navigateHome}>
+                Home
+            </button>
+
             <div className="logout-container">
                 {isLoggedIn && (
                     <button

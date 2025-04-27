@@ -1,6 +1,6 @@
 import  pool from '../database/db.js';
 import  retrieveTodays  from '../database/thisDayWord.js';
-
+//Sets a random word not used in the last year as a "today's word". If its already set doesnt do anything
 async function setRandom() {
     const isTodaysWordRetrieved = await retrieveTodays();
     if (isTodaysWordRetrieved) {
@@ -21,11 +21,11 @@ async function setRandom() {
             console.log("NO WORD");
             return null;
         }
-
         const word = res.rows[0].word;
+        console.log(word);
 
         await pool.query('UPDATE words SET date_used = CURRENT_DATE WHERE word = $1;', [word]);
-        
+        console.log(word);
         return word;
     } catch (error) {
         console.error('Error setting random word:', error);
@@ -45,4 +45,4 @@ async function testSetRandom() {
 }
 
 testSetRandom();
-export default setRandom ;
+export default testSetRandom ;

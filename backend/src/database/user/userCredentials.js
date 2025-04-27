@@ -1,5 +1,5 @@
 import pool from '../db.js';
-import argon2 from 'argon2';  // Using argon2 instead of bcrypt
+import argon2 from 'argon2'; 
 
 
 async function checkUserCredentials(username, password) {
@@ -36,7 +36,6 @@ async function checkUserExistance(username) {
     try {
         const result = await pool.query('SELECT username FROM users WHERE username = $1', [username]);
 
-        // Check if the username already exists
         if (result.rows.length > 0) {
             return true; 
         } else {
@@ -52,11 +51,10 @@ async function checkEmailUsed(email) {
     try {
         const result = await pool.query('SELECT username FROM users WHERE email = $1', [email]);
 
-        // Check if the user with this email already exists
         if (result.rows.length > 0) {
-            return true;  // Email already taken
+            return true; 
         } else {
-            return false;  // Email is available
+            return false; 
         }
     } catch (error) {
         console.error('Database query error:', error);

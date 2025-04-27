@@ -1,6 +1,6 @@
 
 import pool from './db.js';
-
+//Retrieve all words from database
 async function loadAllWords() {
     try {
         const res = await pool.query('SELECT word FROM words;');

@@ -166,5 +166,22 @@ body {
 }
 	.solve-result.show {
 		opacity: 1;
-		transform: translateX(0); /* Move to the original position */
+		transform: translateX(0); 
+	}
+.home-button {
+	position: absolute;
+	top: 80px; 
+	left: 160px;
+	padding: 15px 30px;
+	background-color: #4CAF50;
+	color: white;
+	font-size: 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	z-index: 10;
+}
+
+	.home-button:hover {
+		background-color: #45a049;
 	}

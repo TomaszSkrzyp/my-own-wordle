@@ -2,7 +2,7 @@ import pool from '../database/db.js';
 
 let cachedWord = null;
 let cachedDate = null;
-
+//Retrieve today's word from db or cache
 async function retrieveTodays() {
     const today = new Date().toISOString().split('T')[0];  
 
