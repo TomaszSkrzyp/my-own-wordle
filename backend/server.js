@@ -30,7 +30,7 @@ app.use(session({
   secret: server_secret,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } 
+  cookie: { secure: true } 
 }));
 
 app.use('/api/word', wordRoutes);
