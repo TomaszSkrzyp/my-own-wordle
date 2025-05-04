@@ -6,6 +6,7 @@ import Board from '../components/Board';
 import Modal from '../components/Modal';
 import LetterDisplay from '../components/LetterDisplay';
 import SolveDisplay from '../components/SolveDisplay';
+import { CsrfContext } from '../csrf/CsrfContext';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -112,6 +113,7 @@ const App = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'CSRF-Token': csrfToken  
             },
 
             credentials: 'include',
@@ -171,13 +173,15 @@ const App = () => {
             credentials: 'include', // Ensure session is included
             headers: {
                 'Content-Type': 'application/json',
+                'CSRF-Token': csrfToken  
             },
 
         });
 
     };
     const navigateHome = () => {
-        navigate('/');  // Adjust the route if necessary
+        handleLogout();
+        navigate('/');  
     };
     return (
         <div className="App">
@@ -215,29 +219,31 @@ const App = () => {
                     onClose={() => setModalVisible(false)}
                 />
             ) }
-            <Board
+            <div class="input-hint-wrapper">
+                <Board
                 guesses={guesses}
                 setGuesses={setGuesses}
                 attempts={storedAttempts}
                 submitGuess={submitGuess}
                 gameOver={gameOver}
-            />
-
-            <LetterDisplay
-                asciiToColor={asciiToColor}
-                onKeyClick={handleLetterInput}
-            />
-            <div className="solve-container">
-                <button className="solve-button" onClick={fetchSolve}>
+                />
+                <div className="solve-container">
+                    <button className="solve-button" onClick={fetchSolve}>
                     {solveResult ? 'Hide hint' : 'Show hint'}
-                </button>
+                    </button>
 
-                {solveResult && (
+                    {solveResult && (
                     <div className="solve-result">
                         <SolveDisplay word={solveResult.word} number={solveResult.number} />
                     </div>
                 )}
             </div>
+            </div>
+            <LetterDisplay
+                asciiToColor={asciiToColor}
+                onKeyClick={handleLetterInput}
+            />
+            
         </div>
     );
 }

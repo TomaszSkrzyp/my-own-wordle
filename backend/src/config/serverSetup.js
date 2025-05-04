@@ -1,7 +1,7 @@
 
 import { initWordList } from '../logic/wordListService.js';
 import resetStatesFromDB from '../database/gameStates/stateReset.js';
-import testSetRandom from '../database/thisDayWord.js';
+import setRandom from '../database/chooseWord.js';
 //PROJEKT
 import fs from 'fs';
 import path from 'path';
@@ -28,7 +28,7 @@ const updateLastRunTime = (date) => {
 
 const runDailyTask = async () => {
     try {
-        await testSetRandom();
+         setRandom();
         console.log('Running daily reset task...');
         await resetStatesFromDB();
 
@@ -42,6 +42,7 @@ const startTasks = async () => {
     const now = new Date();
     const lastRun =  getLastRunTime();
     await initWordList();
+    
     // if the daily tasks has not been run today
     if (!lastRun || now.getDate() !== lastRun.getDate()) {
         console.log('Daily task missed. Running task now...');

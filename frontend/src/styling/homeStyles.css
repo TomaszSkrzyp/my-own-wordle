@@ -1,5 +1,6 @@
 .home {
     display: flex;
+    caret-color: transparent;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -9,7 +10,10 @@
     font-family: Arial, sans-serif;
     text-align: center;
     padding: 20px;
+    caret-color: transparent; /* hides the text cursor by default */
 }
+
+
 
     .home h1 {
         font-size: 48px;
@@ -17,6 +21,9 @@
         color: white;
     }
 
+    .home:focus-within {
+        caret-color: auto; /* show cursor when any child (like an input) is focused */
+    }
     .home button {
         width: 250px;
         padding: 20px;

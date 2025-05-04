@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CsrfContext } from '../csrf/CsrfContext';
 import '../styling/authStyles.css';
 
 import { validatePassword, validateUsername,validateEmail } from '../validators/credentialValidator.js';
@@ -34,7 +35,10 @@ const Register = () => {
                 method: 'POST',
 
                 credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'CSRF-Token': csrfToken  
+                },
                 body: JSON.stringify({ username, email, password }),
 
             });
@@ -57,8 +61,13 @@ const Register = () => {
     const handleLogin = () => {
         navigate('/login');
     };
+    const handleGoBack = () => {
+        navigate(-1);
+    };
 
     return (
+        <div className="register">
+        <button className="go-back-button" onClick={handleGoBack}>Go Back</button>
         <div className="auth-page">
             <h1>Register</h1>
             <form className="auth-form" onSubmit={handleSubmit}>
@@ -67,7 +76,7 @@ const Register = () => {
                 <input type="password" id="password" placeholder="Password" required />
                 <button type="submit">Register</button>
             </form>
-            <button className="secondary-button" onClick={handleLogin}>Back to Login</button>
+            </div>
         </div>
     );
 };

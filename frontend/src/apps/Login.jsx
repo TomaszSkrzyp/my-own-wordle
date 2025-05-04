@@ -1,12 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CsrfContext } from '../csrf/CsrfContext';
 import  {  validatePassword, validateUsername } from '../validators/credentialValidator.js';
 import '../styling/authStyles.css';
 
 const Login = () => {
-    const navigate = useNavigate();
-
+    const navigate = useNavigate();;
     const handleSubmit = async (e) => {
+
+        handleLogout();
         e.preventDefault();
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
@@ -21,7 +23,10 @@ const Login = () => {
                 method: 'POST',
 
                 credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'CSRF-Token': csrfToken  
+                },
                 body: JSON.stringify({ username, password }),
             });
 
@@ -36,12 +41,24 @@ const Login = () => {
             alert('Login failed');
         }
     };
+    const handleLogout = async () => {
+        await fetch('http://localhost:5000/api/login/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
 
+
+    };
     const handleRegister = () => {
         navigate('/register');
     };
-
+    const handleGoBack = () => {
+        navigate(-1); 
+    };
+    
     return (
+        <div className="login">
+        <button className = "go-back-button" onClick = {handleGoBack } > Go Back</button >
         <div className="auth-page">
             <h1>Login</h1>
             <form className="auth-form" onSubmit={handleSubmit}>
@@ -50,6 +67,7 @@ const Login = () => {
                 <button type="submit">Login</button>
             </form>
             <button className="secondary-button" onClick={handleRegister}>Register</button>
+            </div>
         </div>
     );
 };

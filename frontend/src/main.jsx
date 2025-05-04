@@ -3,14 +3,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import { CsrfProvider } from './csrf/CsrfContext';
+
 import App from './apps/App';
 import Home from './apps/Home';
-
 import Register from './apps/Register';
 import Login from './apps/Login';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+    <CsrfProvider>
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<Home />} />
@@ -20,6 +23,7 @@ root.render(
 
             <Route path="/register" element={<Register />} />
         </Routes>
-    </BrowserRouter>
+        </BrowserRouter>
+    </CsrfProvider>
 );
 

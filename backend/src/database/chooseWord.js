@@ -1,6 +1,5 @@
 import  pool from '../database/db.js';
 import  retrieveTodays  from '../database/thisDayWord.js';
-//Sets a random word not used in the last year as a "today's word". If its already set doesnt do anything
 async function setRandom() {
     const isTodaysWordRetrieved = await retrieveTodays();
     if (isTodaysWordRetrieved) {
