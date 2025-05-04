@@ -1,24 +1,31 @@
-
+// src/csrf/CsrfContext.js
 import React, { createContext, useState, useEffect } from 'react';
 
-export const CsrfContext = createContext('');
+export const CsrfContext = createContext();
 
-export function CsrfProvider({ children }) {
-  const [csrfToken, setCsrfToken] = useState('');
+export const CsrfProvider = ({ children }) => {
+    const [csrfToken, setCsrfToken] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      const res = await fetch('http://localhost:5000/api/csrf-token', {
-        credentials: 'include'
-      });
-      const { csrfToken } = await res.json();
-      setCsrfToken(csrfToken);
-    })();
-  }, []);
+    useEffect(() => {
+        const fetchCsrfToken = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/csrf-token', {
+                    credentials: 'include',
+                });
+                const data = await response.json();
+                console.log(data);
+                setCsrfToken(data.csrfToken);
+            } catch (err) {
+                console.error('Failed to fetch CSRF token', err);
+            }
+        };
 
-  return (
-    <CsrfContext.Provider value={csrfToken}>
-      {children}
-    </CsrfContext.Provider>
-  );
-}
+        fetchCsrfToken();
+    }, []);
+
+    return (
+        <CsrfContext.Provider value={{ csrfToken }}>
+            {children}
+        </CsrfContext.Provider>
+    );
+};

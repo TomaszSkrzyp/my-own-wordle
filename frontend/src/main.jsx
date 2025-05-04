@@ -14,15 +14,14 @@ import Login from './apps/Login';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <CsrfProvider>
-    <BrowserRouter>
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/game" element={<App />} />
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/game" element={<App />} />
 
-            <Route path="/login" element={<Login />} />
-
-            <Route path="/register" element={<Register />} />
-        </Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                </Routes>
         </BrowserRouter>
     </CsrfProvider>
 );

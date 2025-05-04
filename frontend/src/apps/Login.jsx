@@ -1,11 +1,12 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { React, useContext } from 'react';
+import { useNavigate} from 'react-router-dom';
 import { CsrfContext } from '../csrf/CsrfContext';
 import  {  validatePassword, validateUsername } from '../validators/credentialValidator.js';
 import '../styling/authStyles.css';
 
 const Login = () => {
-    const navigate = useNavigate();;
+    const navigate = useNavigate();
+    const { csrfToken } = useContext(CsrfContext); 
     const handleSubmit = async (e) => {
 
         handleLogout();
@@ -25,7 +26,7 @@ const Login = () => {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'CSRF-Token': csrfToken  
+                    'X-CSRF-Token': csrfToken,
                 },
                 body: JSON.stringify({ username, password }),
             });

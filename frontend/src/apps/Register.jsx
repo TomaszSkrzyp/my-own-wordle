@@ -1,4 +1,4 @@
-import React from 'react';
+import { React, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CsrfContext } from '../csrf/CsrfContext';
 import '../styling/authStyles.css';
@@ -9,6 +9,7 @@ import { validatePassword, validateUsername,validateEmail } from '../validators/
 
 const Register = () => {
     const navigate = useNavigate();
+    const { csrfToken } = useContext(CsrfContext); 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -37,7 +38,7 @@ const Register = () => {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'CSRF-Token': csrfToken  
+                    'X-CSRF-Token': csrfToken
                 },
                 body: JSON.stringify({ username, email, password }),
 

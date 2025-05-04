@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import '../styling/boardStyles.css';
 import '../styling/modalStyles.css';
 import '../styling/displayStyles.css';
@@ -26,6 +26,7 @@ const App = () => {
 
 
     const navigate = useNavigate();
+    const { csrfToken } = useContext(CsrfContext); 
 
     useEffect(() => {
         const fetchGameState = async () => {
@@ -113,7 +114,7 @@ const App = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'CSRF-Token': csrfToken  
+                'X-CSRF-Token': csrfToken,
             },
 
             credentials: 'include',
@@ -173,7 +174,7 @@ const App = () => {
             credentials: 'include', // Ensure session is included
             headers: {
                 'Content-Type': 'application/json',
-                'CSRF-Token': csrfToken  
+                'X-CSRF-Token': csrfToken
             },
 
         });
@@ -219,7 +220,7 @@ const App = () => {
                     onClose={() => setModalVisible(false)}
                 />
             ) }
-            <div class="input-hint-wrapper">
+            <div className="input-hint-wrapper">
                 <Board
                 guesses={guesses}
                 setGuesses={setGuesses}
