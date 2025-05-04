@@ -31,7 +31,7 @@ app.use(session({
   secret: server_secret,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } 
+  cookie: { secure: true } //Switch to true for production
 }));
 
 app.use('/api/word', wordRoutes);
