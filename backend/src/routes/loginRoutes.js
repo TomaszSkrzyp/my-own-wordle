@@ -23,13 +23,16 @@ router.post('/', async (req, res) => {
     // save user info to session
     req.session.user = {
         username: username,
-        userId: result.userId 
+        userId: result.userId,
+        
     };
+    
     console.log("Session ID:", req.sessionID);
     return res.json({ message: 'Login successful' });
 });
 //api/logout
-router.post('/logout', async(req, res) => {
+router.post('/logout', async (req, res) => {
+    console.log("logging out");
         req.session.destroy(err => {
             if (err) {
                 console.error("Error destroying session:", err);
@@ -87,9 +90,19 @@ router.post('/logout', async(req, res) => {
 
     return res.status(201).json({ message: 'Registration successful.' });
  });
-router.post('/guest', (req, res) => {
-    req.session.allowedToPlay = true;
+router.post('/allow', (req, res) => {
+    console.log("Session data:", req.session);
+    
+
+    req.session.allowedToContinue = true;
+
+    console.log("Session data:", req.session);
     res.json({ success: true });
 });
-
+router.get('/checkIfAllowed', async (req, res) => {
+    if (!req.session.allowedToContinue) {
+        console.log("Go back home");
+        return res.status(403).json({ error: 'Access denied' });
+    }
+});
 export default router;

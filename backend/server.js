@@ -34,7 +34,9 @@ app.use(session({
   secret: server_secret,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false } //switch to true for production
+    cookie: {
+        secure: false,
+        maxAge: null    } //switch to true for production
 }));
 
 app.use(bodyParser.json());
@@ -51,7 +53,15 @@ app.use('/api/word', wordRoutes);
 
 app.use('/api/login', loginRoutes);
 app.get('/api/csrf-token', (req, res) => {
-    res.json({ csrfToken: req.csrfToken() });
+    // Log the CSRF token stored in the session
+    console.log('CSRF Token from session:', req.session._csrfSecret);
+
+    // Generate and log the current CSRF token for the request
+    const csrfToken = req.csrfToken();
+    console.log('Current CSRF Token for the request:', csrfToken);
+
+    // Send the CSRF token to the client
+    res.json({ csrfToken });
 });
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

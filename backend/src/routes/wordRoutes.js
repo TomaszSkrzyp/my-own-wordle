@@ -25,14 +25,13 @@ router.post('/reset', (req, res) => {
 router.get('/state', async (req, res) => {
     console.log("Session ID:", req.sessionID);
     console.log("Session :", req.session);
-    if (!req.session.allowedToPlay) {
+
+    if (!req.session.allowedToContinue) {
         console.log("Go back home");
         return res.status(403).json({ error: 'Access denied' });
     }
-   
-
-        // Logged-in user: try to load saved game state
-        if (req.session.user && req.session.user.userId) {
+    // Logged-in user: try to load saved game state
+    if (req.session.user && req.session.user.userId) {
             console.log("User is logged in — trying to load saved state");
 
             try {
@@ -92,12 +91,6 @@ router.post('/check', async (req, res) => {
         const todayWord = await retrieveTodays();
         console.log(todayWord);
 
-        console.log(todayWord);
-
-        console.log(todayWord);
-
-        console.log(todayWord);
-        console.log(todayWord);
 
         const result = await checkWord(guess, todayWord, gameState.letterColors);
         console.log(result);

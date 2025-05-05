@@ -1,4 +1,4 @@
-import { React, useContext } from 'react';
+import { React, useContext,useEffect    } from 'react';
 import { useNavigate} from 'react-router-dom';
 import { CsrfContext } from '../csrf/CsrfContext';
 import  {  validatePassword, validateUsername } from '../validators/credentialValidator.js';
@@ -7,39 +7,61 @@ import '../styling/authStyles.css';
 const Login = () => {
     const navigate = useNavigate();
     const { csrfToken } = useContext(CsrfContext); 
-    const handleSubmit = async (e) => {
+    useEffect(() => {
+        if (!csrfToken) {
+            console.log("FAILED"); return;
+        }
+        console.log("CSRF:");
+        console.log(csrfToken);
+        const checkProperVisit = async () => {
+            const response = await fetch('http://localhost:5000/api/login/checkIfAllowed', {
+                method: 'GET',
+                credentials: 'include',
+            });
 
-        handleLogout();
-        e.preventDefault();
+            if (response.status === 403) {
+                console.warn("Access denied. Redirecting to home.");
+                navigate('/'); // or show a message first
+                return;
+            }
+        }
+        checkProperVisit();
+    }, [csrfToken]);
+    const handleSubmit = async (e) => {
+        e.preventDefault();  // Prevent default form submission behavior
+
+        // Collect form data
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        console.log(username);
+
+        // Validate the form data
         if (!validateUsername(username) || !validatePassword(password)) {
             alert('Invalid username or password.');
             return;
         }
-        
+
         try {
+            // Perform the login request
             const res = await fetch('http://localhost:5000/api/login', {
                 method: 'POST',
-
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-Token': csrfToken,
+                    'X-CSRF-Token': csrfToken, 
                 },
                 body: JSON.stringify({ username, password }),
             });
 
             const data = await res.json();
+
             if (res.ok) {
-               
-                navigate('/game'); // Login successful
+                navigate('/game');
             } else {
-                alert(data.error);
+                alert(data.error || 'Login failed');
             }
         } catch (err) {
-            alert('Login failed');
+            console.error("Login error:", err);
+            alert('An error occurred while trying to log in.');
         }
     };
     const handleLogout = async () => {

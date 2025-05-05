@@ -29,7 +29,7 @@ const App = () => {
 
 
     const navigate = useNavigate();
-    const { csrfToken } = useContext(CsrfContext); 
+    const { csrfToken, refreshCsrfToken } = useContext(CsrfContext);
 
     useEffect(() => {
         if (!csrfToken) {
@@ -38,23 +38,28 @@ const App = () => {
         console.log("CSRF:");
         console.log(csrfToken);
         const fetchGameState = async () => {
-            const response = await fetch('http://localhost:5000/api/word/state', {
-                method: 'GET',
-                credentials: 'include',
-            });
-            if (response.status === 403) {
-                console.warn("Access denied. Redirecting to home.");
-                navigate('/'); // or show a message first
-                return;
-            }
+            try {
+                const response = await fetch('http://localhost:5000/api/word/state', {
+                    method: 'GET',
+                    credentials: 'include',
+                });
 
-            
-            const data = await response.json();
-            setGuesses(data.gameState.guesses);
-            setAttempts(data.gameState.attempts);
-            setGameOver(data.gameState.gameOver);
-            setAscii(data.gameState.letterColors);
-            setIsLoggedIn(data.loggedIn);
+                if (response.status === 403) {
+                    console.warn("Access denied. Redirecting to home.");
+                    navigate('/'); // or show a message first
+                    return;
+                }
+
+                const data = await response.json();
+
+                setGuesses(data.gameState.guesses);
+                setAttempts(data.gameState.attempts);
+                setGameOver(data.gameState.gameOver);
+                setAscii(data.gameState.letterColors);
+                setIsLoggedIn(data.loggedIn);
+            } catch (error) {
+                console.error("Error fetching game state:", error);
+            }
         };
 
         fetchGameState();
@@ -188,8 +193,13 @@ const App = () => {
     const handleLogout = async () => {
         await fetch('http://localhost:5000/api/login/logout', {
             method: 'POST',
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
         });
+        await refreshCsrfToken();
 
 
         navigate('/');
@@ -197,7 +207,7 @@ const App = () => {
     const resetGameOnServer = async () => {
         await fetch('http://localhost:5000/api/word/reset', {
             method: 'POST',
-            credentials: 'include', // Ensure session is included
+            credentials: 'include', 
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-Token': csrfToken
