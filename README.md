@@ -18,6 +18,7 @@
 - **Password Hashing**: Argon2
 - **API**: RESTful API for communication between frontend and backend
 - **Session Management**: Express-session for managing user sessions
+- **Security**: Lusca middleware for CSRF protection, XSS protection, and secure HTTP headers
 
 ## Installation
 
