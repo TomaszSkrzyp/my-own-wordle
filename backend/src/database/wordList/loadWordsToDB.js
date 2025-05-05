@@ -1,6 +1,6 @@
 //PROJEKT
 import fs from 'fs';
-import pool from '../database/db.js';
+import pool from '../db.js';
 
 async function insertWordsToDatabase() {
     try {

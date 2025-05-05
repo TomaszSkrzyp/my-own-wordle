@@ -1,4 +1,4 @@
-import pool from '../database/db.js';
+import pool from '../db.js';
 
 let cachedWord = null;
 let cachedDate = null;

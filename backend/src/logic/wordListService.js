@@ -1,16 +1,34 @@
 
-import { loadAllWords } from '../database/loadWords.js';
+import { loadAllWords } from '../database/wordList/loadWordsFromDB.js';
+import {  computeLetterFrequencies, sortWordListByLetterFrequency } from './wordFrequencyHelpers.js';
 
+let sortedWordList = [];
+let letterFrequencies = {};
 let wordList = [];
 
 async function initWordList() {
-    console.log("start");
+    console.log("Start loading word list...");
     wordList = await loadAllWords();
+
     console.log(`Word list loaded with ${wordList.length} entries.`);
+
+    // compute global letter frequencies
+    letterFrequencies = computeLetterFrequencies(wordList);
+
+    // sort word list by frequency score
+    sortedWordList = sortWordListByLetterFrequency(wordList, letterFrequencies);
+
+    console.log("Word list sorted by letter frequency.");
+    for (let i = 0; i < 100; i++) {
+        console.log(sortedWordList[i]);
+    }
 }
 
 function getWordList() {
     return wordList;
+}
+function getSortedWordList() {
+    return sortedWordList;
 }
 
 function isValidWord(word) {
@@ -26,4 +44,4 @@ function isValidWord(word) {
 }
 
 
-export { initWordList, getWordList, isValidWord };
+export { initWordList, getWordList,getSortedWordList, isValidWord };

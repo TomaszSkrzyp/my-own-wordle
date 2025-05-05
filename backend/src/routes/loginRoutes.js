@@ -1,11 +1,9 @@
 import express from 'express';  
-const router = express.Router();
 import { checkUserCredentials, checkUserExistance, checkEmailUsed } from '../database/user/userCredentials.js';
-
 import createNewUser from '../database/user/registerUser.js';
-
-
 import { validatePassword, validateUsername, validateEmail } from '../logic/validateCredentials.js';
+
+const router = express.Router();
 //api/login/
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
@@ -88,5 +86,10 @@ router.post('/logout', async(req, res) => {
    
 
     return res.status(201).json({ message: 'Registration successful.' });
+ });
+router.post('/guest', (req, res) => {
+    req.session.allowedToPlay = true;
+    res.json({ success: true });
 });
+
 export default router;

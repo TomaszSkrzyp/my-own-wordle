@@ -1,12 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styling/homeStyles.css'; 
+import { CsrfContext } from '../csrf/CsrfContext';
 
 const Home= () => {
     const navigate = useNavigate();
 
-    const handleGuestPlay = () => {
-        navigate('/game');
+    const { csrfToken } = useContext(CsrfContext);
+    const handleGuestPlay = async () => {
+        const response = await fetch('http://localhost:5000/api/login/guest', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken,
+            },
+        });
+
+        if (response.ok) {
+            navigate('/game');
+        } else {
+            alert('Failed to start guest session.');
+        }
     };
 
     const handleLogin = () => {

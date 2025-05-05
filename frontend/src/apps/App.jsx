@@ -23,21 +23,33 @@ const App = () => {
 
     const [solveResult, setSolveResult] = useState(null); 
 
+    const [solutionShown, setSolutionShown] = useState(false); 
+
+
 
 
     const navigate = useNavigate();
     const { csrfToken } = useContext(CsrfContext); 
 
     useEffect(() => {
+        if (!csrfToken) {
+            console.log("FAILED"); return;
+        }
+        console.log("CSRF:");
+        console.log(csrfToken);
         const fetchGameState = async () => {
             const response = await fetch('http://localhost:5000/api/word/state', {
                 method: 'GET',
                 credentials: 'include',
             });
+            if (response.status === 403) {
+                console.warn("Access denied. Redirecting to home.");
+                navigate('/'); // or show a message first
+                return;
+            }
 
+            
             const data = await response.json();
-            console.log("dtatshadsu");
-            console.log(data);
             setGuesses(data.gameState.guesses);
             setAttempts(data.gameState.attempts);
             setGameOver(data.gameState.gameOver);
@@ -46,7 +58,7 @@ const App = () => {
         };
 
         fetchGameState();
-    }, []);
+    }, [csrfToken]);
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -59,10 +71,7 @@ const App = () => {
     }, [guesses, storedAttempts, gameOver]);
 
     const fetchSolve = async () => {
-        if (solveResult) {
-            // If already shown, hide it
-            setSolveResult(null);
-        } else {
+        
             // Fetch and show
             const response = await fetch('http://localhost:5000/api/word/solve', {
                 method: 'GET',
@@ -70,8 +79,20 @@ const App = () => {
             });
             const data = await response.json();
             setSolveResult({ word: data.bestWord, number: data.numberOfWords });
-        }
+        
     };
+    const toggleSolution = async () => {
+        if (!solutionShown) {
+            await fetchSolve();
+            console.log(solveResult);
+            setSolutionShown(true);
+        }
+        else {
+
+            setSolutionShown(false);
+            setSolveResult(null);
+        }
+    }
 
 
     const handleLetterInput = (key) => {
@@ -120,6 +141,11 @@ const App = () => {
             credentials: 'include',
             body: JSON.stringify({ guess: currentGuess }),
         });
+        if (response.status === 403) {
+            // CSRF mismatch or unauthorized session
+            navigate('/'); // Redirect to homepage/login
+            return;
+        }
 
         const data = await response.json();
         if (data.error) {
@@ -229,11 +255,11 @@ const App = () => {
                 gameOver={gameOver}
                 />
                 <div className="solve-container">
-                    <button className="solve-button" onClick={fetchSolve}>
-                    {solveResult ? 'Hide hint' : 'Show hint'}
+                    <button className="solve-button" onClick={toggleSolution}>
+                    {solutionShown ? 'Hide hint' : 'Show hint'}
                     </button>
 
-                    {solveResult && (
+                    {solutionShown && (
                     <div className="solve-result">
                         <SolveDisplay word={solveResult.word} number={solveResult.number} />
                     </div>

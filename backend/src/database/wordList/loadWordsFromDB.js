@@ -1,5 +1,5 @@
 
-import pool from './db.js';
+import pool from '../db.js';
 //Retrieve all words from database
 async function loadAllWords() {
     try {

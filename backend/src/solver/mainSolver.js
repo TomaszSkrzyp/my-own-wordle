@@ -1,5 +1,6 @@
-import { getWordList } from '../logic/wordListService.js'
-function findViableWords(greens, yellows, blacks, wordList = getWordList()) {
+import { getSortedWordList } from '../logic/wordListService.js'
+
+function findViableWords(greens, yellows, blacks, wordList = getSortedWordList()) {
     return wordList.filter(word => {
         //check green letters
         for (const letter in greens) {

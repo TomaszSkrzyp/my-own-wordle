@@ -1,5 +1,5 @@
-import  pool from '../database/db.js';
-import  retrieveTodays  from '../database/thisDayWord.js';
+import  pool from '../db.js';
+import  retrieveTodays  from './wordRetrieval.js';
 async function setRandom() {
     const isTodaysWordRetrieved = await retrieveTodays();
     if (isTodaysWordRetrieved) {
@@ -44,4 +44,4 @@ async function testSetRandom() {
 }
 
 testSetRandom();
-export default testSetRandom ;
+export default setRandom ;

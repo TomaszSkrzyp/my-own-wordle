@@ -1,6 +1,6 @@
 import express from 'express';
 
-import retrieveTodays from '../database/thisDayWord.js';
+import retrieveTodays from '../database/wordleWord/wordRetrieval.js';
 import { checkWord,letterColorsGreen } from '../logic/game.js';
 import { isValidWord } from '../logic/wordListService.js';
 import { initGameState } from '../logic/initGameState.js';
@@ -25,6 +25,10 @@ router.post('/reset', (req, res) => {
 router.get('/state', async (req, res) => {
     console.log("Session ID:", req.sessionID);
     console.log("Session :", req.session);
+    if (!req.session.allowedToPlay) {
+        console.log("Go back home");
+        return res.status(403).json({ error: 'Access denied' });
+    }
    
 
         // Logged-in user: try to load saved game state

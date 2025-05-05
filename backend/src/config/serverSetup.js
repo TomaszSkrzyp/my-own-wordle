@@ -1,7 +1,7 @@
 
 import { initWordList } from '../logic/wordListService.js';
 import resetStatesFromDB from '../database/gameStates/stateReset.js';
-import setRandom from '../database/chooseWord.js';
+import setRandom from '../database/wordleWord/chooseWord.js';
 //PROJEKT
 import fs from 'fs';
 import path from 'path';
