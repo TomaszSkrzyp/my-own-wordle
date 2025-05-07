@@ -1,10 +1,11 @@
 import express from 'express';  
 import { checkUserCredentials, checkUserExistance, checkEmailUsed } from '../database/user/userCredentials.js';
 import createNewUser from '../database/user/registerUser.js';
+import { getUserStats } from '../database/user/userStats.js';
 import { validatePassword, validateUsername, validateEmail } from '../logic/validateCredentials.js';
 
 const router = express.Router();
-//api/login/
+
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
 
@@ -20,17 +21,33 @@ router.post('/', async (req, res) => {
     if (!result.success) {
         return res.status(401).json({ error: result.message });
     }
-    // save user info to session
+
+    // Get user stats after login
+    const statsResult = await getUserStats(result.userId);
+    if (!statsResult.success) {
+        return res.status(404).json({ error: statsResult.message });
+    }
+
+    // Save user info and stats to session
     req.session.user = {
         username: username,
         userId: result.userId,
-        
+        gamesPlayed: statsResult.gamesPlayed,
+        gamesWon: statsResult.gamesWon,
+        lastPlayedDate: statsResult.lastPlayedDate,
     };
-    
+    console.log(statsResult.lastPlayedDate);
     console.log("Session ID:", req.sessionID);
-    return res.json({ message: 'Login successful' });
+    return res.json({
+        message: 'Login successful',
+        username: username,
+        gamesPlayed: statsResult.gamesPlayed,
+        gamesWon: statsResult.gamesWon,
+        lastPlayedDate: statsResult.lastPlayedDate,
+    });
 });
-//api/logout
+
+
 router.post('/logout', async (req, res) => {
     console.log("logging out");
         req.session.destroy(err => {
@@ -51,10 +68,6 @@ router.post('/logout', async (req, res) => {
 });
 
 
-
-
-
-//api/reguster
  router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -90,6 +103,7 @@ router.post('/logout', async (req, res) => {
 
     return res.status(201).json({ message: 'Registration successful.' });
  });
+
 router.post('/allow', (req, res) => {
     console.log("Session data:", req.session);
     
@@ -99,10 +113,12 @@ router.post('/allow', (req, res) => {
     console.log("Session data:", req.session);
     res.json({ success: true });
 });
+
 router.get('/checkIfAllowed', async (req, res) => {
     if (!req.session.allowedToContinue) {
         console.log("Go back home");
         return res.status(403).json({ error: 'Access denied' });
     }
 });
+
 export default router;

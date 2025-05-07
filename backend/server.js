@@ -11,6 +11,7 @@ import lusca from 'lusca';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 
+import userRoutes from './src/routes/userRoutes.js';
 import wordRoutes from './src/routes/wordRoutes.js';
 import loginRoutes from './src/routes/loginRoutes.js';
 import startTasks from './src/config/serverSetup.js';
@@ -50,6 +51,7 @@ app.use(lusca.xssProtection(true));
 
 app.use('/api/word', wordRoutes);
 
+app.use('/api/user', userRoutes);
 
 app.use('/api/login', loginRoutes);
 app.get('/api/csrf-token', (req, res) => {

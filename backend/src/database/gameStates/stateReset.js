@@ -6,7 +6,7 @@ async function resetStatesToDB() {
     try {
         const defaultState = initGameState();
         await pool.query(`UPDATE game_states
-        SET game_data = $1, updated_at = NOW();
+        SET game_data = $1, updated_at = null;
     `, [ defaultState]);
 
         console.log(` Game states reset`);

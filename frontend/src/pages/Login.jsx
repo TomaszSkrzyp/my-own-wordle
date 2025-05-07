@@ -55,7 +55,7 @@ const Login = () => {
             const data = await res.json();
 
             if (res.ok) {
-                navigate('/game');
+                navigate('/profile');
             } else {
                 alert(data.error || 'Login failed');
             }
@@ -64,14 +64,7 @@ const Login = () => {
             alert('An error occurred while trying to log in.');
         }
     };
-    const handleLogout = async () => {
-        await fetch('http://localhost:5000/api/login/logout', {
-            method: 'POST',
-            credentials: 'include'
-        });
-
-
-    };
+    
     const handleRegister = () => {
         navigate('/register');
     };

@@ -19,9 +19,8 @@ async function initWordList() {
     sortedWordList = sortWordListByLetterFrequency(wordList, letterFrequencies);
 
     console.log("Word list sorted by letter frequency.");
-    for (let i = 0; i < 100; i++) {
-        console.log(sortedWordList[i]);
-    }
+    console.log(sortedWordList[0]);
+    
 }
 
 function getWordList() {

@@ -1,4 +1,4 @@
-import React, { useContext,useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styling/homeStyles.css';
 import { CsrfContext } from '../csrf/CsrfContext';
@@ -13,6 +13,7 @@ const Home = () => {
         console.log("CSRF:");
         console.log(csrfToken);
     }, [csrfToken]);
+
     // function to allow the user to continue using the app. A way to ensure the user uses a proper route
     const allowUserToContinue = async () => {
         console.log("TOKEN:");
@@ -32,10 +33,10 @@ const Home = () => {
             console.log(data);
             if (response.ok) {
                 console.log("User is allowed to continue:", data.success);
-                return response; 
+                return response;
             } else {
                 console.error("Error allowing user to continue:", data.error);
-                return null; 
+                return null;
             }
         } catch (error) {
             console.error("Error making the request to /allow:", error);

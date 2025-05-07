@@ -6,10 +6,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { CsrfProvider } from './csrf/CsrfContext';
 
-import App from './apps/App';
-import Home from './apps/Home';
-import Register from './apps/Register';
-import Login from './apps/Login';
+import App from './pages/App';
+import Home from './pages/Home';
+import Register from './pages/Register';
+import Login from './pages/Login';
+
+import UserHome from './pages/UserHome';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,6 +22,7 @@ root.render(
                 <Route path="/" element={<Home />} />
                 <Route path="/game" element={<App />} />
 
+                <Route path="/profile" element={<UserHome />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 </Routes>

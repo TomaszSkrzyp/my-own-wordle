@@ -21,9 +21,9 @@ const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-    const [solveResult, setSolveResult] = useState(null); 
+    const [solveResult, setSolveResult] = useState(null);
 
-    const [solutionShown, setSolutionShown] = useState(false); 
+    const [solutionShown, setSolutionShown] = useState(false);
 
 
 
@@ -76,15 +76,15 @@ const App = () => {
     }, [guesses, storedAttempts, gameOver]);
 
     const fetchSolve = async () => {
-        
-            // Fetch and show
-            const response = await fetch('http://localhost:5000/api/word/solve', {
-                method: 'GET',
-                credentials: 'include',
-            });
-            const data = await response.json();
-            setSolveResult({ word: data.bestWord, number: data.numberOfWords });
-        
+
+        // Fetch and show
+        const response = await fetch('http://localhost:5000/api/word/solve', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        const data = await response.json();
+        setSolveResult({ word: data.bestWord, number: data.numberOfWords });
+
     };
     const toggleSolution = async () => {
         if (!solutionShown) {
@@ -101,7 +101,7 @@ const App = () => {
 
 
     const handleLetterInput = (key) => {
-        
+
         if (gameOver) return;
         console.log(key);
         // Copy guesses so we can mutate
@@ -169,7 +169,7 @@ const App = () => {
         if (solveResult.word) {
             fetchSolve();
         }
-        
+
     };
 
 
@@ -207,7 +207,7 @@ const App = () => {
     const resetGameOnServer = async () => {
         await fetch('http://localhost:5000/api/word/reset', {
             method: 'POST',
-            credentials: 'include', 
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-Token': csrfToken
@@ -217,16 +217,24 @@ const App = () => {
 
     };
     const navigateHome = () => {
-        handleLogout();
-        navigate('/');  
+        
+        if (isLoggedIn) {
+
+            navigate('/profile');
+        }
+        else {
+            handleLogout();
+            navigate('/');
+        }
     };
     return (
         <div className="App">
-            <button className="home-button" onClick={navigateHome}>
-                Home
-            </button>
 
-            <div className="logout-container">
+
+            <div className="button-container">
+                <button className="home-button" onClick={navigateHome}>
+                    Home
+                </button>
                 {isLoggedIn && (
                     <button
                         className="logout-button"
@@ -250,37 +258,37 @@ const App = () => {
                     confirmLabel="Logout"
                     cancelLabel="Cancel"
                 />
-            ) :  (
+            ) : (
                 <Modal
                     message={modalMessage}
                     onClose={() => setModalVisible(false)}
                 />
-            ) }
+            )}
             <div className="input-hint-wrapper">
                 <Board
-                guesses={guesses}
-                setGuesses={setGuesses}
-                attempts={storedAttempts}
-                submitGuess={submitGuess}
-                gameOver={gameOver}
+                    guesses={guesses}
+                    setGuesses={setGuesses}
+                    attempts={storedAttempts}
+                    submitGuess={submitGuess}
+                    gameOver={gameOver}
                 />
                 <div className="solve-container">
                     <button className="solve-button" onClick={toggleSolution}>
-                    {solutionShown ? 'Hide hint' : 'Show hint'}
+                        {solutionShown ? 'Hide hint' : 'Show hint'}
                     </button>
 
                     {solutionShown && (
-                    <div className="solve-result">
-                        <SolveDisplay word={solveResult.word} number={solveResult.number} />
-                    </div>
-                )}
-            </div>
+                        <div className="solve-result">
+                            <SolveDisplay word={solveResult.word} number={solveResult.number} />
+                        </div>
+                    )}
+                </div>
             </div>
             <LetterDisplay
                 asciiToColor={asciiToColor}
                 onKeyClick={handleLetterInput}
             />
-            
+
         </div>
     );
 }
