@@ -9,22 +9,24 @@ router.get('/data', (req, res) => {
     }
     
     const { username, userId, gamesPlayed, gamesWon, lastPlayedDate } = req.session.user;
+
+    const dateObj = new Date(lastPlayedDate);
+    const formattedLastPlayedDate= dateObj.toLocaleDateString();
     console.log({ username, userId, gamesPlayed, gamesWon, lastPlayedDate  });
-    res.json({ username, userId, gamesPlayed, gamesWon, lastPlayedDate });
+    res.json({ username:username, userId:userId, gamesPlayed:gamesPlayed, gamesWon:gamesWon, lastPlayedDate:formattedLastPlayedDate });
 });
 
 router.post('/startNew', async (req, res) => {
     try {
-        const { username, userId, gamesPlayed,gamesWon } = req.session.user;
-
-        const result = await recordGameStarted(userId, gamesPlayed);
+        const { username, userId, gamesPlayed,gamesWon,lastPlayedDate } = req.session.user;
+        
+        const result = await recordGameStarted(userId, gamesPlayed,lastPlayedDate);
 
         if (result.success) {
             req.session.user.gamesPlayed = result.gamesPlayed;
 
             return res.json({
                 message: 'Games played incremented successfully.',
-                userData: { username, userId, gamesPlayed, gamesWon }
             });
         } else {
             return res.status(500).json({ error: 'Failed to increment games played.' });

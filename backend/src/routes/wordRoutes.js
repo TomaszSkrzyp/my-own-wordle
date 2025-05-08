@@ -7,6 +7,7 @@ import { initGameState } from '../logic/initGameState.js';
 import getStateFromDB from '../database/gameStates/loadGame.js';
 import saveStateToDB from '../database/gameStates/writeGame.js';
 
+import { recordGameWon } from '../database/user/userStats.js';
 
 import solver from '../solver/mainSolver.js';
 
@@ -105,7 +106,11 @@ router.post('/check', async (req, res) => {
         if (result.feedback === 'ggggg' || attempts+1==6) {
             gameState.gameOver = true;
             if (result.feedback === 'ggggg') {
-
+                console.log("LOGGED IN");
+                console.log(!!req.session.user);
+                if (!!req.session.user) {
+                    recordGameWon(req.session.user.userId, req.session.user.gamesWon);
+                }
                 result.letterColors = letterColorsGreen();
             }
         }

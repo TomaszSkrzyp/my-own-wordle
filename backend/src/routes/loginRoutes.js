@@ -119,6 +119,8 @@ router.get('/checkIfAllowed', async (req, res) => {
         console.log("Go back home");
         return res.status(403).json({ error: 'Access denied' });
     }
-});
 
+    // respond properly if allowed
+    return res.status(200).json({ message: 'Access granted' });
+})
 export default router;

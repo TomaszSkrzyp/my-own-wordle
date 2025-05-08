@@ -1,37 +1,61 @@
 import React, { useEffect, useState,useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { checkProperVisit } from '../helpers/checkProper.js';
 import { CsrfContext } from '../csrf/CsrfContext';
-
+import '../styling/userHomeStyles.css';
+import '../styling/modalStyles.css';
+import Modal from '../components/Modal';
 const UserHome = () => {
     const [userData, setUserData] = useState(null);
+    
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+    const [modalMessage, setModalMessage] = useState('');
     const navigate = useNavigate();
+    
     const { csrfToken, refreshCsrfToken } = useContext(CsrfContext);
     useEffect(() => {
-        // Fetch user data from backend
-        const fetchUserData = async () => {
-            try {
-                const res = await fetch('http://localhost:5000/api/user/data', {
-                    method: 'GET',
-                    credentials: 'include',
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    console.log("sdf");
-                    console.log(data)
-                    setUserData(data);
-                } else {
-                    navigate('/login'); // Redirect to login if session is invalid
-                }
-            } catch (err) {
-                console.error('Error fetching user data:', err);
-                navigate('/login');
-            }
+        const initialize = async () => {
+
+            await fetchUserData();
+            await checkProperVisit(navigate,refreshCsrfToken);
         };
-
-        fetchUserData();
+        initialize();
     }, [navigate]);
+    const fetchUserData = async () => {
+        try {
+            const res = await fetch('http://localhost:5000/api/user/data', {
+                method: 'GET',
+                credentials: 'include',
+            });
+            if (res.ok) {
+                const data = await res.json();
+                console.log("sdf");
+                console.log(data)
+                setUserData(data);
+            } else {
+                navigate('/login'); // Redirect to login if session is invalid
+            }
+        } catch (err) {
+            console.error('Error fetching user data:', err);
+            navigate('/login');
+        }
+    };
+    const handleLogout = async () => {
+        await fetch('http://localhost:5000/api/login/logout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+        });
+        await refreshCsrfToken();
 
+
+        navigate('/');
+    };
     const handleNewGame = async () => {
         try {
             const res = await fetch('http://localhost:5000/api/user/startNew', {
@@ -55,11 +79,36 @@ const UserHome = () => {
     if (!userData) {
         return <div className="text-white text-center mt-10">Loading...</div>;
     }
+    const winningPercentage =
+        userData.gamesPlayed > 0
+            ? ((userData.gamesWon / userData.gamesPlayed) * 100).toFixed(1)
+            : '0.0';
     return (
         <div className="userHome">
+            <div className="button-container">
+                <button
+                    className="logout-button"
+                    onClick={() => setShowLogoutConfirm(true)}
+                >
+                    Logout
+                </button>
+            </div>
+
+            <Modal
+                message={showLogoutConfirm ? "Are you sure you want to log out?" : modalMessage}
+                onConfirm={showLogoutConfirm ? () => { handleLogout(); setShowLogoutConfirm(false); } : undefined}
+                onClose={() => setShowLogoutConfirm(false)}
+                confirmLabel={showLogoutConfirm ? "Logout" : undefined}
+                cancelLabel={showLogoutConfirm ? "Cancel" : undefined}
+            />
             <div className="userContainer">
                 <h1 className="welcome">Welcome, {userData.username}!</h1>
-                <p className="gamesStats"> Games Played: {userData.gamesPlayed} Games Won: {userData.gamesWon} Last game date: {userData.lastPlayedDate}</p>
+
+                <div className="gamesStats">
+                    <div>Games Played: <span className="statTag">{userData.gamesPlayed}</span> Games Won: <span className="statTag">{userData.gamesWon}</span></div>
+                    <div>Win Rate: <span className="statTag">{winningPercentage}%</span></div>
+                    <div>Last Game: <span className="statTag">{userData.lastPlayedDate}</span></div>
+                </div>
 
                 <button className="newGameButton" onClick={handleNewGame}>Play New Game </button>
             </div>

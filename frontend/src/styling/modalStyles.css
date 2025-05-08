@@ -5,31 +5,31 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.7); /* Darker background */
+    background-color: rgba(0, 0, 0, 0.7);
     justify-content: center;
     align-items: center;
-    pointer-events: none; /* Prevent interaction when not visible */
+    pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
     .modal-overlay.show {
         display: flex;
-        pointer-events: all; /* Enable interaction when visible */
-        opacity: 1; /* Fade in */
+        pointer-events: all; 
+        opacity: 1;
     }
 
 .modal-content {
-    background-color: #2c2c2c; /* Darker background */
-    color: #fff; /* White text for contrast */
-    padding: 15px 25px; /* Slightly smaller padding */
-    border-radius: 8px; /* Rounded corners */
+    background-color: #2c2c2c;
+    color: #fff; 
+    padding: 15px 25px; 
+    border-radius: 8px; 
     text-align: center;
     width: auto;
-    max-width: 300px; /* Smaller modal width */
-    min-width: 250px; /* Minimum width */
+    max-width: 300px; 
+    min-width: 250px; 
     pointer-events: all;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Slightly deeper shadow for more contrast */
-    transition: transform 0.3s ease; /* Smooth scaling transition */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
+    transition: transform 0.3s ease; 
 }
 .modal-choice {
     width: 100px;

@@ -76,7 +76,7 @@ const App = () => {
     }, [guesses, storedAttempts, gameOver]);
 
     const fetchSolve = async () => {
-
+        resetGameOnServer();
         // Fetch and show
         const response = await fetch('http://localhost:5000/api/word/solve', {
             method: 'GET',
@@ -216,7 +216,7 @@ const App = () => {
         });
 
     };
-    const navigateHome = () => {
+    const navigateProfile = () => {
         
         if (isLoggedIn) {
 
@@ -231,9 +231,12 @@ const App = () => {
         <div className="App">
 
 
+            
+
+            <h1>Wordle Game</h1>
             <div className="button-container">
-                <button className="home-button" onClick={navigateHome}>
-                    Home
+                <button className="profile-button" onClick={navigateProfile}>
+                    {isLoggedIn ? 'Profile' : 'Home'}
                 </button>
                 {isLoggedIn && (
                     <button
@@ -244,9 +247,6 @@ const App = () => {
                     </button>
                 )}
             </div>
-
-            <h1>Wordle Game</h1>
-
             {showLogoutConfirm ? (
                 <Modal
                     message="Are you sure you want to log out?"

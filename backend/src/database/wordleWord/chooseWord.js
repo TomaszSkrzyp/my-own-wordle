@@ -43,5 +43,4 @@ async function testSetRandom() {
     return;
 }
 
-testSetRandom();
 export default setRandom ;

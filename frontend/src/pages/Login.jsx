@@ -1,31 +1,24 @@
 import { React, useContext,useEffect    } from 'react';
 import { useNavigate} from 'react-router-dom';
 import { CsrfContext } from '../csrf/CsrfContext';
-import  {  validatePassword, validateUsername } from '../validators/credentialValidator.js';
+import { validatePassword, validateUsername } from '../validators/credentialValidator.js';
+
+import { checkProperVisit } from '../helpers/checkProper.js';
 import '../styling/authStyles.css';
 
 const Login = () => {
     const navigate = useNavigate();
-    const { csrfToken } = useContext(CsrfContext); 
+    const { csrfToken, refreshCsrfToken } = useContext(CsrfContext); 
     useEffect(() => {
         if (!csrfToken) {
             console.log("FAILED"); return;
         }
         console.log("CSRF:");
         console.log(csrfToken);
-        const checkProperVisit = async () => {
-            const response = await fetch('http://localhost:5000/api/login/checkIfAllowed', {
-                method: 'GET',
-                credentials: 'include',
-            });
-
-            if (response.status === 403) {
-                console.warn("Access denied. Redirecting to home.");
-                navigate('/'); // or show a message first
-                return;
-            }
+        const initialize = async () => {
+            await checkProperVisit(navigate, refreshCsrfToken);
         }
-        checkProperVisit();
+        initialize();
     }, [csrfToken]);
     const handleSubmit = async (e) => {
         e.preventDefault();  // Prevent default form submission behavior

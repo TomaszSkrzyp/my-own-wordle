@@ -3,8 +3,6 @@ import argon2 from 'argon2';
 
 
 async function checkUserCredentials(username, password) {
-    console.log("USER LOGIN");
-    console.log(username);
 
     
     try {

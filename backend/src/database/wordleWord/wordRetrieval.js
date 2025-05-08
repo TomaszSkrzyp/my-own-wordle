@@ -19,9 +19,12 @@ async function retrieveTodays() {
 
         if (res.rows.length > 0) {
             cachedWord = res.rows[0].word;
-            cachedDate = today; 
+            cachedDate = today;
             console.log('Cache updated with new word:', cachedWord);
             return cachedWord;
+        }
+        else {
+            console.log("Word not chosen yet");
         }
 
         return null;  
