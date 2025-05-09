@@ -19,6 +19,7 @@ const UserHome = () => {
         const initialize = async () => {
 
             await fetchUserData();
+            console.log(userData.gamesWon);
             await checkProperVisit(navigate,refreshCsrfToken);
         };
         initialize();
@@ -77,7 +78,7 @@ const UserHome = () => {
         navigate('/game');
     }
     if (!userData) {
-        return <div className="text-white text-center mt-10">Loading...</div>;
+        return <div>Loading...</div>;
     }
     const winningPercentage =
         userData.gamesPlayed > 0

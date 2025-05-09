@@ -43,7 +43,7 @@ const App = () => {
                     method: 'GET',
                     credentials: 'include',
                 });
-
+                console.log("RESPONSE");
                 if (response.status === 403) {
                     console.warn("Access denied. Redirecting to home.");
                     navigate('/'); // or show a message first
@@ -51,6 +51,8 @@ const App = () => {
                 }
 
                 const data = await response.json();
+
+                console.log(data);
 
                 setGuesses(data.gameState.guesses);
                 setAttempts(data.gameState.attempts);
@@ -76,7 +78,6 @@ const App = () => {
     }, [guesses, storedAttempts, gameOver]);
 
     const fetchSolve = async () => {
-        resetGameOnServer();
         // Fetch and show
         const response = await fetch('http://localhost:5000/api/word/solve', {
             method: 'GET',

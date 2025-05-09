@@ -84,6 +84,8 @@ router.post('/check', async (req, res) => {
 
     const gameState = req.session.gameState;
     const { guesses, attempts } = gameState;
+    console.log("GUESSES");
+    console.log(guesses);
     try {
         const isValid =  isValidWord(guess);
         if (!isValid) {
