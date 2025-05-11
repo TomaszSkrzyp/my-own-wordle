@@ -9,7 +9,6 @@ import saveStateToDB from '../database/gameStates/writeGame.js';
 
 import { recordGameWon } from '../database/user/userStats.js';
 
-import solver from '../solver/mainSolver.js';
 
 import isToday from '../database/gameStates/isToday.js';
 
@@ -139,20 +138,5 @@ router.post('/check', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-// Handle a guess
-router.get('/solve', async (req, res) => {
-    console.log("Session ID:", req.sessionID);
 
-    console.log("Session :", req.session);
-
-    const gameState = req.session.gameState;
-
-
-    const solveResults = solver(gameState.guesses.slice(0, gameState.attempts));
-    console.log(solveResults);
-    res.json({
-        bestWord: solveResults.word,
-        numberOfWords: solveResults.number,
-    });
-});
 export default router;

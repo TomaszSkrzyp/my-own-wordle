@@ -2,38 +2,43 @@ import React, { useEffect, useState,useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { checkProperVisit } from '../helpers/checkProper.js';
+
+import { isSameDate } from '../helpers/date.js';
 import { CsrfContext } from '../csrf/CsrfContext';
 import '../styling/userHomeStyles.css';
 import '../styling/modalStyles.css';
 import Modal from '../components/Modal';
 const UserHome = () => {
     const [userData, setUserData] = useState(null);
-    
+    const [isLastPlayedToday, setIsLastPlayedToday] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
     const [modalMessage, setModalMessage] = useState('');
     const navigate = useNavigate();
-    
     const { csrfToken, refreshCsrfToken } = useContext(CsrfContext);
+
     useEffect(() => {
         const initialize = async () => {
 
             await fetchUserData();
-            console.log(userData.gamesWon);
-            await checkProperVisit(navigate,refreshCsrfToken);
+            await checkProperVisit(navigate, refreshCsrfToken);
+            
         };
         initialize();
     }, [navigate]);
+    useEffect(() => {
+        if (userData) {
+            console.log("Updated userData:", userData);
+        }
+    }, [userData]);
     const fetchUserData = async () => {
         try {
             const res = await fetch('http://localhost:5000/api/user/data', {
                 method: 'GET',
                 credentials: 'include',
             });
+
             if (res.ok) {
                 const data = await res.json();
-                console.log("sdf");
-                console.log(data)
                 setUserData(data);
             } else {
                 navigate('/login'); // Redirect to login if session is invalid
@@ -43,6 +48,7 @@ const UserHome = () => {
             navigate('/login');
         }
     };
+
     const handleLogout = async () => {
         await fetch('http://localhost:5000/api/login/logout', {
             method: 'POST',
@@ -106,12 +112,19 @@ const UserHome = () => {
                 <h1 className="welcome">Welcome, {userData.username}!</h1>
 
                 <div className="gamesStats">
-                    <div>Games Played: <span className="statTag">{userData.gamesPlayed}</span> Games Won: <span className="statTag">{userData.gamesWon}</span></div>
-                    <div>Win Rate: <span className="statTag">{winningPercentage}%</span></div>
-                    <div>Last Game: <span className="statTag">{userData.lastPlayedDate}</span></div>
+                    <div>Games Played:<span className="statTag">{userData.gamesPlayed}</span> Games Won:<span className="statTag">{userData.gamesWon}</span></div>
+                    <div>Win Rate:<span className="statTag">{winningPercentage}%</span></div>
+                    <div>Last Game:<span className="statTag">
+                        {userData.isLastPlayedToday ? 'Today' : userData.lastPlayedDate}
+                    </span></div>
                 </div>
 
-                <button className="newGameButton" onClick={handleNewGame}>Play New Game </button>
+                <button
+                    className="newGameButton"
+                    onClick={handleNewGame}
+                >
+                    {userData.isLastPlayedToday ? 'Load Game' : 'Play New Game'}
+                </button>
             </div>
         </div>
     );

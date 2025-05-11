@@ -1,6 +1,7 @@
 import React from 'react';
 
 const SolveDisplay = ({ word, number, onClose }) => {
+    
     return (
         <div className="solve-display">
             

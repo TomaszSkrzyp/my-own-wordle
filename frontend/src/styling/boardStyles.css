@@ -12,26 +12,25 @@ body {
 	height: 100vh;
 }
 .button-container {
-	position: fixed; 
+	position: fixed;
 	top: 4px;
-	left: 6px; 
+	font-size: 20px;
+	left: 6px;
 	display: flex;
-	gap: 12px; 
+	gap: 12px;
 	z-index: 1000;
 }
 
-.profile-button{
+.profile-button {
 	padding: 20px 32px;
-	font-size: 140%;
+	font-size: 100%;
 	border: none;
 	border-radius: 8px;
 	cursor: pointer;
+	background-color: #27ae60;
 	transition: background-color 0.3s ease;
 }
 
-.profile-button {
-	background-color: #27ae60;
-}
 
 	.profile-button:hover {
 		background-color: #219150;

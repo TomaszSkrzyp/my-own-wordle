@@ -14,6 +14,8 @@ import bodyParser from 'body-parser';
 import userRoutes from './src/routes/userRoutes.js';
 import wordRoutes from './src/routes/wordRoutes.js';
 import loginRoutes from './src/routes/loginRoutes.js';
+
+import solveRoutes from './src/routes/solveRoutes.js';
 import startTasks from './src/config/serverSetup.js';
 
 
@@ -49,11 +51,12 @@ app.use(lusca.csrf());
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 
+//API routes
 app.use('/api/word', wordRoutes);
-
 app.use('/api/user', userRoutes);
-
+app.use('/api/solve', solveRoutes);
 app.use('/api/login', loginRoutes);
+
 app.get('/api/csrf-token', (req, res) => {
     // Log the CSRF token stored in the session
     console.log('CSRF Token from session:', req.session._csrfSecret);

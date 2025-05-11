@@ -79,7 +79,7 @@ const App = () => {
 
     const fetchSolve = async () => {
         // Fetch and show
-        const response = await fetch('http://localhost:5000/api/word/solve', {
+        const response = await fetch('http://localhost:5000/api/solve', {
             method: 'GET',
             credentials: 'include',
         });
@@ -89,6 +89,7 @@ const App = () => {
     };
     const toggleSolution = async () => {
         if (!solutionShown) {
+            
             await fetchSolve();
             console.log(solveResult);
             setSolutionShown(true);
@@ -147,6 +148,7 @@ const App = () => {
             credentials: 'include',
             body: JSON.stringify({ guess: currentGuess }),
         });
+        
         if (response.status === 403) {
             // CSRF mismatch or unauthorized session
             navigate('/'); // Redirect to homepage/login
@@ -167,8 +169,8 @@ const App = () => {
         } else if (data.gameState.attempts > 5) {
             showModal('You ran out of guesses!');
         }
-        if (solveResult.word) {
-            fetchSolve();
+        if (solutionShown) {
+            toggleSolution();
         }
 
     };

@@ -1,7 +1,7 @@
 import express from 'express';  
 import { checkUserCredentials, checkUserExistance, checkEmailUsed } from '../database/user/userCredentials.js';
 import createNewUser from '../database/user/registerUser.js';
-import { getUserStats } from '../database/user/userStats.js';
+import { updateUserSessionStats } from '../database/user/userStats.js';
 import { validatePassword, validateUsername, validateEmail } from '../logic/validateCredentials.js';
 
 const router = express.Router();
@@ -21,23 +21,21 @@ router.post('/', async (req, res) => {
     if (!result.success) {
         return res.status(401).json({ error: result.message });
     }
+    req.session.user = {
+        username: username,
+        userId: result.userId
+    };
 
     // Get user stats after login
-    const statsResult = await getUserStats(result.userId);
+    const statsResult = await updateUserSessionStats(req);
     if (!statsResult.success) {
+        console.log("FAILED");
         return res.status(404).json({ error: statsResult.message });
     }
 
-    // Save user info and stats to session
-    req.session.user = {
-        username: username,
-        userId: result.userId,
-        gamesPlayed: statsResult.gamesPlayed,
-        gamesWon: statsResult.gamesWon,
-        lastPlayedDate: statsResult.lastPlayedDate,
-    };
     console.log(statsResult.lastPlayedDate);
     console.log("Session ID:", req.sessionID);
+    console.log(req.session);
     return res.json({
         message: 'Login successful',
         username: username,

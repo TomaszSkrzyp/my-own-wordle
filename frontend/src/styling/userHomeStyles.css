@@ -17,12 +17,13 @@ body {
     top: 4%;
     left: 6%;
     display: flex;
+    font-size: 22px;
     gap: 10px;
     z-index: 1000;
 }
 .logout-button {
     padding: 20px 32px;
-    font-size: 140%;
+    font-size: 100%;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -39,7 +40,7 @@ body {
 
 
 .userContainer {
-    margin-top: 100px;
+    caret-color: transparent;
     padding: 100px;
     background-color: #1f1f1f;
     border-radius: 10px;
@@ -53,30 +54,35 @@ body {
 }
 
 .welcome {
-    font-size: 42px;
+    font-size: 48px;
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 40px;
+    color: #27ae60;
+    text-align: center;
 }
 
 .gamesStats div {
-    margin-bottom: 16px;
-    font-size: 20px;
+    margin-bottom: 40px;
+    font-size: 22px;
 }
 
+
 .statTag {
-    background-color: #e0f7fa; 
-    padding: 4px 8px;
+    background-color: #e0f7fa;
+    padding: 6px 10px;
     border-radius: 4px;
-    margin-left: 8px;
-    color: #00796b;
+    margin-left: 6px;
+    margin-right: 12px;
+    color: black;
 }
 
 .newGameButton {
-    background-color: #538d4e;
+    background-color: #27ae60;
     color: white;
     padding: 28px 60px;
     font-size: 20px;
     border: none;
+    margin-top: 10px;
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -84,7 +90,7 @@ body {
 }
 
     .newGameButton:hover {
-        background-color: #3a7134;
+        background-color: #219150;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     }
 

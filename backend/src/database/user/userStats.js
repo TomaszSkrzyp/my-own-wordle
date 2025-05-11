@@ -1,28 +1,53 @@
 import pool from '../db.js';
 
-import { isSameDate } from '../../logic/helpers/date.js';
-async function getUserStats(userId) {
-    console.log("Retrieving stats for user ID:", userId);
+import {isToday, isSameDate } from '../../logic/helpers/date.js';
+async function updateUserSessionStats(req) {
+    console.log("Retrieving stats for user ID:", req.session.user.userId);
 
     try {
-        // get user's stats (games played and games won)
         const result = await pool.query(
-            'SELECT games_played, games_won,last_played_date FROM users WHERE id = $1',
-            [userId]
+            'SELECT games_played, games_won, last_played_date FROM users WHERE id = $1',
+            [req.session.user.userId]
         );
 
         if (result.rows.length === 0) {
+            console.log("fail");
             return { success: false, message: 'User stats not found.' };
         }
 
-        const stats = result.rows[0];  // retrieve the stats from the query result
-        return { success: true, gamesPlayed: stats.games_played, gamesWon: stats.games_won, lastPlayedDate: stats.last_played_date };
+        const stats = result.rows[0];
+        console.log(stats);
+        // update session with the latest stats
+        req.session.user.gamesPlayed = stats.games_played;
+        req.session.user.gamesWon = stats.games_won;
+        req.session.user.lastPlayedDate = stats.last_played_date;
+        console.log("checkin it");
+        console.log(stats.last_played_date);
+
+        let isLastPlayedToday = false;
+        if (stats.last_played_date) {
+            isLastPlayedToday = isToday(new Date(stats.last_played_date));
+        }
+
+        req.session.user.isLastPlayedToday = isLastPlayedToday;
+
+        console.log(isLastPlayedToday);
+        console.log("Session updated with new stats:", req.session.user);
+
+        return {
+            success: true,
+            gamesPlayed: stats.games_played,
+            gamesWon: stats.games_won,
+            lastPlayedDate: stats.last_played_date,
+            isLastPlayedToday
+        };
 
     } catch (error) {
         console.error('DB Error:', error);
         return { success: false, message: 'Database error' };
     }
 }
+
 
 
 async function recordGameStarted(userId, currentGamesPlayed, lastPlayedDate) {
@@ -42,7 +67,7 @@ async function recordGameStarted(userId, currentGamesPlayed, lastPlayedDate) {
             'UPDATE users SET games_played = $1, last_played_date = $2 WHERE id = $3',
             [updatedGamesPlayed, currentDate, userId] 
         );
-        console.log(today);
+        console.log(currentDate);
         if (result.rowCount === 0) {
             return { success: false, message: 'Failed to update games played.' };
         }
@@ -84,4 +109,6 @@ async function recordGameWon(userId, currentGamesWon) {
         return { success: false, message: 'Database error' };
     }
 }
-export { getUserStats, recordGameStarted, recordGameWon };
+export { 
+    updateUserSessionStats, recordGameStarted, recordGameWon
+};
