@@ -111,6 +111,38 @@ To set up the PostgreSQL database schema required for the application, follow th
 
    Replace `postgres` with your actual PostgreSQL username if it differs. This will create the necessary tables and structures for the application.
 
-   
+## License
+
+This project is licensed under the **MIT License**, allowing for free use, modification, and distribution. See the [LICENSE](LICENSE) file for full details.
+
+---
+
+## Contributing
+
+We welcome contributions to enhance **my-own-wordle**! To contribute, please follow these steps:
+
+1. Fork the repository to your GitHub account.
+2. Create a new feature branch:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. Make your changes (e.g., bug fixes, new features, or documentation improvements).
+4. Commit your changes with a descriptive message:
+   ```bash
+   git commit -m "Add your concise description here"
+   ```
+5. Push your changes to your fork:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+6. Open a Pull Request on the main repository, detailing your changes and their purpose.
+
+All contributions are appreciated
+
+---
+
+## Contact
+
+For questions, bug reports, or suggestions, please reach out via the **[GitHub Issues](https://github.com/TomaszSkrzyp/my-own-wordle/issues)** page. I'm here to assist and value your feedback!   
 
     
