@@ -38,10 +38,6 @@ router.post('/', async (req, res) => {
     console.log(req.session);
     return res.json({
         message: 'Login successful',
-        username: username,
-        gamesPlayed: statsResult.gamesPlayed,
-        gamesWon: statsResult.gamesWon,
-        lastPlayedDate: statsResult.lastPlayedDate,
     });
 });
 

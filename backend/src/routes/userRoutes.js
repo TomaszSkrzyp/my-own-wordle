@@ -2,7 +2,6 @@ import express from 'express';
 
 import { updateUserSessionStats, recordGameStarted } from '../database/user/userStats.js';
 
-import { isSameDate } from '../logic/helpers/date.js';
 const router = express.Router();
 
 router.get('/data', async (req, res) => {
@@ -19,9 +18,13 @@ router.get('/data', async (req, res) => {
             return res.status(404).json({ error: statsResult.message });
         }
         let formattedLastPlayedDate = "-";
-        if (statsResult.last_played_date) {
+        if (statsResult.lastPlayedDate) {
             const dateObj = new Date(statsResult.lastPlayedDate);
             formattedLastPlayedDate = dateObj.toLocaleDateString();
+        }
+        else {
+            console.log("stqts");
+            console.log(statsResult);
         }
         
 
@@ -36,7 +39,6 @@ router.get('/data', async (req, res) => {
 
         res.json({
             username: req.session.user.username,
-            userId,
             gamesPlayed: statsResult.gamesPlayed,
             gamesWon: statsResult.gamesWon,
             lastPlayedDate: formattedLastPlayedDate,

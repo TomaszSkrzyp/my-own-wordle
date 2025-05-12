@@ -19,8 +19,6 @@ router.post('/reset', (req, res) => {
     req.session.gameState = initGameState();
     res.status(200).json({
         message: 'Game state reset',
-        loggedIn: !!req.session.user,
-        user: req.session.user || null
     });
 });
 router.get('/state', async (req, res) => {
@@ -62,7 +60,6 @@ router.get('/state', async (req, res) => {
     
     res.status(200).json({
         loggedIn: !!req.session.user,
-        user: req.session.user || null,
         gameState: req.session.gameState
     });
 });
@@ -127,10 +124,7 @@ router.post('/check', async (req, res) => {
         }
         res.json({
             result:result.feedback,
-            updatedLetterColors:result.letterColors,
             gameState,
-            loggedIn: !!req.session.user,
-            user: req.session.user || null
         });
 
     } catch (error) {
@@ -138,5 +132,4 @@ router.post('/check', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
-
 export default router;

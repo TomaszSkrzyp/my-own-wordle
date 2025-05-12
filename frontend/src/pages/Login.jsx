@@ -48,6 +48,7 @@ const Login = () => {
             const data = await res.json();
 
             if (res.ok) {
+                console.log(data.message);
                 navigate('/profile');
             } else {
                 alert(data.error || 'Login failed');

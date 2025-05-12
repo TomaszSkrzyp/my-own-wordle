@@ -85,8 +85,32 @@
      This will:
      Start the backend server (Express).
      Start the frontend development server (Vite).
+
 ## Database Setup
 
-IN PROGRESS
+To set up the PostgreSQL database schema required for the application, follow these steps:
+
+1. **Create the database**  
+   Open a terminal or PostgreSQL client and run the following command to create the `wordle_clone` database:
+
+   ```bash
+   createdb wordle_clone
+   ```
+
+   > If `createdb` isn't available, you can also create the database from a PostgreSQL shell with the following SQL command:
+   ```bash
+   CREATE DATABASE wordle_clone;
+   ```
+
+2. **Run the schema.sql file**  
+   Navigate to the `backend/db` directory and run the following command to set up the database schema:
+
+   ```bash
+   psql -U postgres -d wordle_clone -f backend/db/schema.sql
+   ```
+
+   Replace `postgres` with your actual PostgreSQL username if it differs. This will create the necessary tables and structures for the application.
+
+   
 
     
