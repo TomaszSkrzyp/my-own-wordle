@@ -9,8 +9,11 @@ router.get('/', async (req, res) => {
     console.log("Session :", req.session);
 
     const gameState = req.session.gameState;
-
-
+    if (!gameState.hintAvailable) {
+        console.log("shouldnt happen");
+        res.json({ message: "No hint available" });
+    }
+    req.session.gameState.hintAvailable = false;
     const solveResults = solver(gameState.guesses.slice(0, gameState.attempts));
     console.log(solveResults);
     res.json({

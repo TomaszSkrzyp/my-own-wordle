@@ -24,9 +24,10 @@ const Board = ({ guesses, setGuesses, attempts,submitGuess,gameOver }) => {
     }
     }, [guesses, attempts, gameOver]);
     const handleKeyDown = (e, rowIndex, colIndex) => {
-        console.log(e.key);
-        console.log("sadfs");
-        console.log(gameOver);
+
+
+        
+        
         if (gameOver) {
             return;
         }

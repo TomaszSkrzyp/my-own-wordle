@@ -7,7 +7,8 @@ const initGameState = () => ({
     
   guesses: initEmptyGuesses(),
   attempts: 0,
-  gameOver: false,
+    gameOver: false,
+    hintAvailable: true,
     letterColors: Array(26).fill('o').join(''), // Initial color (gray)
 });
 

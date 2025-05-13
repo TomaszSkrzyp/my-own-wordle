@@ -27,7 +27,16 @@ const UserHome = () => {
     }, [navigate]);
     useEffect(() => {
         if (userData) {
-            console.log("Updated userData:", userData);
+            
+
+
+
+
+
+
+
+
+
         }
     }, [userData]);
     const fetchUserData = async () => {

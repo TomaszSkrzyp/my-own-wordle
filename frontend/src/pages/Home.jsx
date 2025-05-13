@@ -10,10 +10,10 @@ const Home = () => {
     const { csrfToken } = useContext(CsrfContext);
     useEffect(() => {
         if (!csrfToken) {
-            console.log("FAILED"); return;
+             return;
         }
-        console.log("CSRF:");
-        console.log(csrfToken);
+        
+        
     }, [csrfToken]);
 
     

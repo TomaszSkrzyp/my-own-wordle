@@ -13,6 +13,8 @@ import { useNavigate } from 'react-router-dom';
 const App = () => {
 
     const [guesses, setGuesses] = useState(Array(6).fill(Array(5).fill('')));
+
+    const [hintAvailable, setHintAvailable] = useState(false);
     const [storedAttempts, setAttempts] = useState(0);
     const [gameOver, setGameOver] = useState(false);
     const [asciiToColor, setAscii] = useState(Array(26).fill('o'));
@@ -33,17 +35,17 @@ const App = () => {
 
     useEffect(() => {
         if (!csrfToken) {
-            console.log("FAILED"); return;
+              return;
         }
-        console.log("CSRF:");
-        console.log(csrfToken);
+         
+         
         const fetchGameState = async () => {
             try {
                 const response = await fetch('http://localhost:5000/api/word/state', {
                     method: 'GET',
                     credentials: 'include',
                 });
-                console.log("RESPONSE");
+                 
                 if (response.status === 403) {
                     console.warn("Access denied. Redirecting to home.");
                     navigate('/'); // or show a message first
@@ -52,7 +54,7 @@ const App = () => {
 
                 const data = await response.json();
 
-                console.log(data);
+                 
 
                 setGuesses(data.gameState.guesses);
                 setAttempts(data.gameState.attempts);
@@ -79,25 +81,33 @@ const App = () => {
 
     const fetchSolve = async () => {
         // Fetch and show
+        
         const response = await fetch('http://localhost:5000/api/solve', {
             method: 'GET',
             credentials: 'include',
         });
         const data = await response.json();
+
         setSolveResult({ word: data.bestWord, number: data.numberOfWords });
 
     };
     const toggleSolution = async () => {
-        if (!solutionShown) {
-            
-            await fetchSolve();
-            console.log(solveResult);
+        if (!(solutionShown)) {
+            if (!hintAvailable) {
+
+                showModal("No hints available.");
+                return;
+            }
+            else if (!solveResult) {
+                await fetchSolve();
+
+
+            }
             setSolutionShown(true);
         }
         else {
 
             setSolutionShown(false);
-            setSolveResult(null);
         }
     }
 
@@ -105,7 +115,7 @@ const App = () => {
     const handleLetterInput = (key) => {
 
         if (gameOver) return;
-        console.log(key);
+         
         // Copy guesses so we can mutate
         const updatedGuesses = guesses.map(row => [...row]);
         const row = updatedGuesses[storedAttempts];
@@ -124,17 +134,17 @@ const App = () => {
                 row[index] = key.toUpperCase();
             }
         }
-        console.log(updatedGuesses);
+         
         updatedGuesses[storedAttempts] = row;
         setGuesses(updatedGuesses);
     };
 
     const submitGuess = async () => {
-        console.log("Enter pressed:", guesses);
-        console.log("Button clicked:", guesses[storedAttempts]);
+         
+         
         const currentGuess = guesses[storedAttempts].join('').toLowerCase();
-        console.log("Sent guess");
-        console.log(currentGuess);
+         
+         
 
 
         // Send guess to server
@@ -163,6 +173,7 @@ const App = () => {
             setGuesses(data.gameState.guesses);
             setAttempts(data.gameState.attempts);
             setGameOver(data.gameState.gameOver);
+            setHintAvailable(data.gameState.hintAvailable);
         }
         if (data.result === 'ggggg') {
             showModal('You won!');
@@ -276,10 +287,15 @@ const App = () => {
                     gameOver={gameOver}
                 />
                 <div className="solve-container">
+                    {!solutionShown &&
+                        <div className="solve-availability">
+                            {(hintAvailable) ? 'One hint available' : 'The hint is not available'}
+                        </div>
+                    }
                     <button className="solve-button" onClick={toggleSolution}>
                         {solutionShown ? 'Hide hint' : 'Show hint'}
                     </button>
-
+                    
                     {solutionShown && (
                         <div className="solve-result">
                             <SolveDisplay word={solveResult.word} number={solveResult.number} />

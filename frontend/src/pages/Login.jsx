@@ -11,10 +11,10 @@ const Login = () => {
     const { csrfToken, refreshCsrfToken } = useContext(CsrfContext); 
     useEffect(() => {
         if (!csrfToken) {
-            console.log("FAILED"); return;
+              return;
         }
-        console.log("CSRF:");
-        console.log(csrfToken);
+         
+         
         const initialize = async () => {
             await checkProperVisit(navigate, refreshCsrfToken);
         }
@@ -48,7 +48,18 @@ const Login = () => {
             const data = await res.json();
 
             if (res.ok) {
-                console.log(data.message);
+                
+
+
+
+
+
+
+
+
+
+
+
                 navigate('/profile');
             } else {
                 alert(data.error || 'Login failed');

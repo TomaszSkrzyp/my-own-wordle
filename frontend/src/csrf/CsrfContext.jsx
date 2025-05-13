@@ -19,7 +19,11 @@ export const CsrfProvider = ({ children }) => {
             });
             const data = await response.json();
             setCsrfToken(data.csrfToken);
-            console.log('Fetched CSRF Token:', data.csrfToken);
+
+
+
+
+
         } catch (err) {
             console.error('Failed to fetch CSRF token:', err);
         }
