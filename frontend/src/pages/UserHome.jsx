@@ -10,7 +10,6 @@ import '../styling/modalStyles.css';
 import Modal from '../components/Modal';
 const UserHome = () => {
     const [userData, setUserData] = useState(null);
-    const [isLastPlayedToday, setIsLastPlayedToday] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const navigate = useNavigate();
@@ -27,16 +26,6 @@ const UserHome = () => {
     }, [navigate]);
     useEffect(() => {
         if (userData) {
-            
-
-
-
-
-
-
-
-
-
         }
     }, [userData]);
     const fetchUserData = async () => {

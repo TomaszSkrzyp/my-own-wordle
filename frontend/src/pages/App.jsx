@@ -7,7 +7,6 @@ import Modal from '../components/Modal';
 import LetterDisplay from '../components/LetterDisplay';
 import SolveDisplay from '../components/SolveDisplay';
 import { CsrfContext } from '../csrf/CsrfContext';
-
 import { useNavigate } from 'react-router-dom';
 
 const App = () => {

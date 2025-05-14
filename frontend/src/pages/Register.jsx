@@ -1,16 +1,27 @@
-import { React, useContext } from 'react';
+import { React, useContext,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CsrfContext } from '../csrf/CsrfContext';
 import '../styling/authStyles.css';
 
+import { checkProperVisit } from '../helpers/checkProper.js';
 import { validatePassword, validateUsername,validateEmail } from '../validators/credentialValidator.js';
 
 
 
 const Register = () => {
     const navigate = useNavigate();
-    const { csrfToken } = useContext(CsrfContext); 
+    const { csrfToken, refreshCsrfToken } = useContext(CsrfContext); 
+    useEffect(() => {
+        if (!csrfToken) {
+            return;
+        }
 
+
+        const initialize = async () => {
+            await checkProperVisit(navigate, refreshCsrfToken);
+        }
+        initialize();
+    }, [csrfToken]);
     const handleSubmit = async (e) => {
         e.preventDefault();
         const username = document.getElementById('username').value;
