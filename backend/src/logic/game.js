@@ -1,4 +1,11 @@
+/*
+Compare a user's guess against the answer and update letter colors.
 
+Returns:
+- 'feedback': a 5-char string of 'g', 'y', or 'b' for each letter.
+- 'letterColors': updated 26-char string tracking best known color for each alphabet letter.
+Uses a two-pass algorithm: first mark greens, then mark yellows/blacks.
+*/
 async function checkWord(guess, answer,letterColors) {
     let feedback = [];
     let answerCopy = [...answer];  
@@ -32,6 +39,11 @@ async function checkWord(guess, answer,letterColors) {
     letterColors = letterColorsArray.join('');
     return { feedback: feedback.join(''), letterColors: letterColors }
 }
+/*
+Initialize all letter colors to grey.
+
+Creates a 26-char string of'o'(grey), indicating no letters have been tried yet.
+*/
 function letterColorsGrey() {
     let letterColors=Array(26).fill('o').join('')
     console.log("colors:");
@@ -40,6 +52,11 @@ function letterColorsGrey() {
 
     return letterColors ;
 }
+/*
+Initialize all letter colors to green.
+
+Creates a 26-char string of'g'(green), indicating a won game.
+*/
 function letterColorsGreen() {
     let letterColors=Array(26).fill('g').join('');
     console.log("colors:");

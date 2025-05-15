@@ -1,6 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 import { colorEnum } from '../helpers/colorEnum.js'
+/*
+Render the Wordle board with flip animations and manage input focus.
+
+Displays a 6x5 grid of tiles showing guesses (front) or colored feedback (back).
+Automatically focuses the next empty input in the active row unless the game is over.
+Handles backspace navigation by moving focus to the prior input when empty
+*/
 const Board = ({ guesses, setGuesses, attempts,submitGuess,gameOver }) => {
     const inputRefs = useRef([]); // For managing focus on input fields
     ;

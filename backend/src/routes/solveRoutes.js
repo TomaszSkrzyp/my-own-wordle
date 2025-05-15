@@ -1,7 +1,13 @@
 import express from 'express';
 
 import solver from '../solver/mainSolver.js';
+/*
+Provide a solver hint based on the user’s current game guesses.
 
+Consumes one hint from the session, runs the solver on previous guesses,
+and returns JSON with the best next word (`bestWord`) and the count of
+remaining possible words (`numberOfWords`).
+*/
 const router = express.Router();
 router.get('/', async (req, res) => {
     console.log("Session ID:", req.sessionID);

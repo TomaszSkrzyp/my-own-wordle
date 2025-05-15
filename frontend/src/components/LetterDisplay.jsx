@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { colorEnum } from '../helpers/colorEnum.js';
+/*
+
+Render an on-screen keyboard showing letter feedback colors.
+
+Displays QWERTY rows with keys colored based on letter status from
+`asciiToColor`. Calls `onKeyClick` for letter or special key clicks
+*/
 const LetterDisplay = ({ asciiToColor,onKeyClick }) => {
     const keyboardRows = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -7,7 +14,7 @@ const LetterDisplay = ({ asciiToColor,onKeyClick }) => {
     ['Enter','Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']
 ];
 
-    // converts the asciiToColor string into a map 
+    // Map ASCII color codes to letters
     const getLetterColors = () => {
         
 

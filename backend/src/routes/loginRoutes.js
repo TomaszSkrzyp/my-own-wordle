@@ -5,7 +5,14 @@ import { updateUserSessionStats } from '../database/user/userStats.js';
 import { validatePassword, validateUsername, validateEmail } from '../logic/validateCredentials.js';
 
 const router = express.Router();
+/*
+Authenticate a user and initialize their session.
 
+Validates the username and password formats, checks credentials
+against the database, then stores `username` and `userId` in
+`req.session.user`. Finally, fetches and stores the user’s
+game stats in the session.
+*/
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
 
@@ -40,7 +47,12 @@ router.post('/', async (req, res) => {
         message: 'Login successful',
     });
 });
+/*
+Log out the current user by clearing their session.
 
+Destroys the Express session, clears the session cookie,
+and returns a success message.
+*/
 
 router.post('/logout', async (req, res) => {
     console.log("logging out");
@@ -61,8 +73,15 @@ router.post('/logout', async (req, res) => {
         });
 });
 
+/*
 
- router.post('/register', async (req, res) => {
+Register a new user account.
+
+Validates username, email, and password formats, checks
+for existing username/email conflicts, then creates the new
+user in the database and returns a success message.
+*/
+router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
     if (!validateUsername(username)) {
@@ -97,7 +116,12 @@ router.post('/logout', async (req, res) => {
 
     return res.status(201).json({ message: 'Registration successful.' });
  });
+ /*
+ 
+Allow the user to proceed to the game by setting a session flag.
 
+Sets `req.session.allowedToContinue = true` and returns success.
+*/
 router.post('/allow', (req, res) => {
     console.log("Session data:", req.session);
     
@@ -107,7 +131,12 @@ router.post('/allow', (req, res) => {
     console.log("Session data:", req.session);
     res.json({ success: true });
 });
+/*
+Check if the user is permitted to continue to the game.
 
+If `allowedToContinue` is not set in the session, returns 403;
+otherwise returns access granted.
+*/
 router.get('/checkIfAllowed', async (req, res) => {
     if (!req.session.allowedToContinue) {
         console.log("Go back home");

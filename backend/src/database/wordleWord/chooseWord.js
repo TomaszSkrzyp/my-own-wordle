@@ -1,5 +1,11 @@
 import  pool from '../db.js';
-import  retrieveTodays  from './wordRetrieval.js';
+import retrieveTodays from './wordRetrieval.js';
+/*
+Selects and marks a random unused (in the last year) word for today’s game.
+
+Checks cache for today’s word; if none, picks a random word not used in
+the past year, sets its `date_used` to today, and returns it.
+*/
 async function setRandom() {
     const isTodaysWordRetrieved = await retrieveTodays();
     if (isTodaysWordRetrieved) {
@@ -31,7 +37,9 @@ async function setRandom() {
         return null;
     }
 }
-
+/*
+Test helper that logs today’s random word or error to the console.
+*/
 async function testSetRandom() {
     const randomWord = await setRandom();
     if (randomWord) {

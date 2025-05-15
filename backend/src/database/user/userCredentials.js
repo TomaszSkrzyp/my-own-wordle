@@ -1,7 +1,13 @@
 import pool from '../db.js';
 import argon2 from 'argon2'; 
 
+/*
+Verify a user’s login credentials.
 
+Checks that the given username exists, then fetches the stored password hash
+and verifies it against the provided password. Returns success with userId
+and username, or an error message if invalid.
+*/
 async function checkUserCredentials(username, password) {
 
     
@@ -26,7 +32,12 @@ async function checkUserCredentials(username, password) {
     }
 }
 
+/*
+Check if a username already exists in the database.
 
+Runs a SELECT query on the `users` table by username. Returns true if at
+least one row is found, false otherwise.
+*/
 
 async function checkUserExistance(username) { 
 
@@ -44,6 +55,12 @@ async function checkUserExistance(username) {
         throw new Error('Database query failed');
     }
 }
+/*
+Check if an email address is already used by another account.
+
+Queries the `users` table by email. Returns true if the email exists,
+false otherwise.
+*/
 async function checkEmailUsed(email) {
 
     try {

@@ -26,6 +26,14 @@ const port = env.BACK_PORT;
 const front_port = env.FRONT_PORT;
 const server_secret = env.SECRET;
 // Middleware
+
+/*
+Initialize Express server, middleware, and API routes.
+
+Sets up CORS, session handling, security headers, JSON parsing,
+and mounts all route handlers. Finally, starts the daily reset task
+and listens on the configured port.
+*/
 app.use(cors({
 
     origin: 'http://localhost:'+(front_port),
@@ -58,14 +66,11 @@ app.use('/api/solve', solveRoutes);
 app.use('/api/login', loginRoutes);
 
 app.get('/api/csrf-token', (req, res) => {
-    // Log the CSRF token stored in the session
     console.log('CSRF Token from session:', req.session._csrfSecret);
 
-    // Generate and log the current CSRF token for the request
     const csrfToken = req.csrfToken();
     console.log('Current CSRF Token for the request:', csrfToken);
 
-    // Send the CSRF token to the client
     res.json({ csrfToken });
 });
 app.listen(port, () => {

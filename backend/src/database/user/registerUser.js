@@ -1,5 +1,12 @@
 import argon2 from 'argon2';
 import pool from '../db.js';
+/*
+Create a new user account in the database.
+
+Connects to the PostgreSQL pool, hashes the provided password using Argon2,
+    and inserts a new record into the `users` table.Returns the new user’s id,
+        username, and email on success, or an error message on failure.
+*/
 async function createNewUser(username, email, password) {
 
 

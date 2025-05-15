@@ -1,4 +1,9 @@
+/*
+Display a modal overlay with a message and optional confirm/cancel buttons.
 
+Shows when `message` is truthy. If `onConfirm` is provided, renders
+confirm and cancel buttons with given labels.
+*/
 const Modal = ({ message, onClose ,onConfirm,confirmLabel,cancelLabel}) => {
     return (
         <div className="modal-overlay" style={{ display: message ? 'flex' : 'none' }} onClick={onClose}>

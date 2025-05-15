@@ -1,5 +1,11 @@
 import { getSortedWordList } from '../logic/wordListService.js'
+/*
+Filter a list of words by green, yellow, and black letter constraints.
 
+`greens` maps letters to positions they must occupy; `yellows` maps letters
+to positions they must avoid but appear elsewhere; `blacks` is a set of
+letters that must not appear.
+*/
 function findViableWords(greens, yellows, blacks, wordList = getSortedWordList()) {
     return wordList.filter(word => {
         //check green letters
@@ -25,6 +31,14 @@ function findViableWords(greens, yellows, blacks, wordList = getSortedWordList()
         return true;
     });
 }
+/*
+Derive letter rules from past guess tiles.
+
+Scans each guess row to build:
+- `greenLetters`: exact matches,
+- `yellowLetters`: present but wrong position,
+- `blackLetters`: absent letters.
+*/
 function findLetterRules(guesses) {
     const greens = {};
     const yellows = {};
@@ -63,6 +77,12 @@ function findLetterRules(guesses) {
         blackLetters: blacks
     };
 }
+/*
+Suggest the next best guess using the current game’s guess history.
+
+Combines letter rules and viable-word filtering to return the top candidate
+and the total number of possibilities remaining.
+*/
 function solver(guesses) {
     const { greenLetters, yellowLetters, blackLetters } = findLetterRules(guesses);
     const possibleWordList = findViableWords(greenLetters, yellowLetters, blackLetters);

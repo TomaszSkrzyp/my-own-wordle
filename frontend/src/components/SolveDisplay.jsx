@@ -1,5 +1,10 @@
 import React from 'react';
+/*
+Show the solver’s suggestion and remaining possibilities.
 
+Displays the best next word and the count of possible words
+returned by the solver endpoint.
+*/
 const SolveDisplay = ({ word, number, onClose }) => {
     
     return (

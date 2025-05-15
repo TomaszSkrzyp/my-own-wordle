@@ -1,6 +1,13 @@
 import pool from '../db.js';
 
-import {isToday, isSameDate } from '../../logic/helpers/date.js';
+import { isToday, isSameDate } from '../../logic/helpers/date.js';
+/*
+Fetch and update the user’s session with the latest game statistics.
+
+Retrieves `games_played`, `games_won`, and `last_played_date` from the `users`
+table for the current session’s userId, then writes these values into
+`req.session.user`. Also computes whether the last play was today.
+*/
 async function updateUserSessionStats(req) {
     console.log("Retrieving stats for user ID:", req.session.user.userId);
 
@@ -47,9 +54,13 @@ async function updateUserSessionStats(req) {
         return { success: false, message: 'Database error' };
     }
 }
+/*
+Record the start of a new game session for the user.
 
-
-
+Checks if the user has already played today; if not, increments
+`games_played` and updates `last_played_date` in the `users` table.
+Returns success or a message if already played/failure.
+*/
 async function recordGameStarted(userId, currentGamesPlayed, lastPlayedDate) {
     console.log("Incrementing games played for user ID:", userId);
 
@@ -82,7 +93,12 @@ async function recordGameStarted(userId, currentGamesPlayed, lastPlayedDate) {
         return { success: false, message: 'Database error' };
     }
 }
+/*
+Increment the user’s win count in the database.
 
+Adds one to the `games_won` column for the given userId. Returns success
+with updated count or an error message.
+*/
 async function recordGameWon(userId, currentGamesWon) {
     console.log("Incrementing games won for user ID:", userId);
 

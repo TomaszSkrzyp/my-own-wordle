@@ -14,13 +14,25 @@ import isToday from '../database/gameStates/isToday.js';
 
 const router = express.Router();
 
-// Reset game
+/*
+Reset the in?session game state to a fresh new game.
+
+Clears any existing guesses and flags, returning a confirmation message.
+*/
 router.post('/reset', (req, res) => {
     req.session.gameState = initGameState();
     res.status(200).json({
         message: 'Game state reset',
     });
 });
+/*
+
+Load or initialize the current game state for a user or guest.
+
+If the user is logged in and has a saved state updated today, load it;
+otherwise initialize a new state. For guests, always start fresh.
+Returns JSON with `loggedIn` and the `gameState`
+*/
 router.get('/state', async (req, res) => {
     console.log("Session ID:", req.sessionID);
     console.log("Session :", req.session);
@@ -64,7 +76,14 @@ router.get('/state', async (req, res) => {
     });
 });
 
-// Handle a guess
+/*
+
+Process a user's guess: validate, compare to today’s word, update state, and save.
+
+Checks word validity, runs feedback logic, updates attempts and colors,
+marks game over or win, persists to DB for logged?in users, and returns
+the feedback and updated gameState.
+*/
 router.post('/check', async (req, res) => {
     console.log("Session ID:", req.sessionID);
 

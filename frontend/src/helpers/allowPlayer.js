@@ -1,5 +1,7 @@
-
-// function to allow the user to continue using the app. A way to ensure the user uses a proper route
+/*
+Function to allow the user to continue using the app.
+It ensures the user uses a proper route and initiates session handling.
+*/
 const allowPlayerToContinue = async (csrfToken) => {
     
     

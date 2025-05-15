@@ -1,6 +1,12 @@
 import { initGameState} from '../../logic/initGameState.js';
 
 import pool from '../db.js';
+/*
+Resets all user game states to the default initial state.
+
+Generates a fresh game state object and updates every row in `game_states`
+to that default, clearing `updated_at` timestamps.
+*/
 async function resetStatesToDB() {
     
     try {
