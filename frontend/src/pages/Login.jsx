@@ -23,6 +23,7 @@ const Login = () => {
       Redirects or refreshes token as needed.
     */
     useEffect(() => {
+        
         if (!csrfToken) {
             return;
         }

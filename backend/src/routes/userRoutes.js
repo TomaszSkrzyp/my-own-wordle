@@ -84,5 +84,20 @@ router.post('/startNew', async (req, res) => {
         return res.status(500).json({ error: 'Server error' });
     }
 });
+/*
+  Returns whether the user is currently logged in, and basic session info.
+
+  Useful for UI to quickly check auth state without fetching full stats.
+*/
+router.get('/status', (req, res) => {
+    if (req.session.user && req.session.user.userId) {
+        return res.json({
+            loggedIn: true,
+            username: req.session.user.username,
+            userId: req.session.user.userId
+        });
+    }
+    res.json({ loggedIn: false });
+});
 
 export default router;

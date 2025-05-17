@@ -91,6 +91,25 @@ const App = () => {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [guesses, storedAttempts, gameOver]);
 
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            // Prepare logout URL
+            const logoutUrl = 'http://localhost:5000/api/login/logout';
+
+            // Send logout request using sendBeacon (no headers possible)
+            navigator.sendBeacon(logoutUrl, '');
+
+            // Optionally, show a confirmation dialog (not recommended UX):
+            // event.preventDefault();
+            // event.returnValue = '';
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
     /*
      fetchSolve - Fetches a solver hint from the backend and stores the best guess and word count.
     */

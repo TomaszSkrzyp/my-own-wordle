@@ -1,3 +1,12 @@
+
+import { React, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { CsrfContext } from '../csrf/CsrfContext';
+import '../styling/authStyles.css';
+
+import { checkProperVisit } from '../helpers/checkProper.js';
+import { validatePassword, validateUsername, validateEmail } from '../validators/credentialValidator.js';
+
 /*
   Register Component - Handles new user registration.
   - Collects username, email, and password inputs.
