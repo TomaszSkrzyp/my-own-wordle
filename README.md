@@ -19,6 +19,7 @@
 - **API**: RESTful API for communication between frontend and backend
 - **Session Management**: Express-session for managing user sessions
 - **Security**: Lusca middleware for CSRF protection, XSS protection, and secure HTTP headers
+- "**Containerization**: Docker for easy setup and deployment
 
 ## Installation
 
@@ -28,12 +29,47 @@
 - PostgreSQL
 - Git
 
-### Setup
+### **Docker Setup (Recommended)**
+
+1. **Clone the repository**:  
+   $'''bash
+   git clone https://github.com/TomaszSkrzyp/my-own-wordle.git  
+   cd my-own-wordle
+   $'''
+
+2. **Copy the backend environment file**:  
+   $'''bash
+   cp backend/.env.example backend/.env
+   $'''
+
+3. **Open `.env` in a text editor and fill in your database credentials and secrets**:  
+   $'''env
+   DB_USER=postgres                 # PostgreSQL default user
+   DB_HOST=db                      # The name of the database service in docker-compose.yml
+   DB_NAME=wordle_clone            # The name of your PostgreSQL database
+   POSTGRES_PASSWORD=your_secure_password # Set the same password as in docker-compose or use the default
+   DB_PORT=5432                    # PostgreSQL container port
+   BACK_PORT=5000                  # Port for backend (Express)
+   FRONT_PORT=5173                 # Port for frontend (Vite)
+   NODE_ENV=development            # Change to 'production' if deploying
+   SECRET=your_app_secret          # Change to a secure session secret
+   $'''
+
+4. **Start the application with Docker Compose**:  
+   $'''bash
+   docker-compose up --build
+   $'''
+
+5. **Access the app**:  
+   - Frontend: [http://localhost:5173]
+   - Backend API: [http://localhost:5000]
+
+### Non-Docker Setup
 
 1. **Clone the repository**:
  ```bash
  git clone https://github.com/TomaszSkrzyp/my-own-wordle.git  
- bcd my-own-wordle
+ cd my-own-wordle
   ```
 
 
@@ -46,19 +82,23 @@
    ```bash
       npm install
     ```
-   - Create a `.env` file in the root of the `backend` directory with the following content:
-   ```bash
-    DB_USER='YourDbUser'            # Your PostgreSQL username (e.g., 'postgres')
-    DB_HOST='YourDbHost'            # Your PostgreSQL host (e.g., 'localhost')
-    DB_NAME='YourDbName'            # The name of your database (e.g., 'wordle_clone')
-    DB_PASSWORD='YourDbPassword'    # Your PostgreSQL password
-    DB_PORT=5432                    # The port where PostgreSQL is running (default: 5432)
-    BACK_PORT=5000                  # The port for your backend server (default: 5000)
-    FRONT_PORT=5173                 # The port for your frontend (default: 5173 for Vite)
-    NODE_ENV=development            # Set to 'production' for production environments
-    SECRET='YourSecretCode'         # Secret key for session encryption (change to something secure)
-    # Note: Customize these values based on your own setup and environment.
-    ```
+   - Copy the backend environment file:  
+   '''bash
+      cp backend/.env.example backend/.env
+   '''
+    - Open `.env` in a text editor and update it with your database credentials and secrets:
+   ```env
+      DB_USER=postgres                 # Your PostgreSQL username (e.g., 'postgres')
+      DB_HOST=your_db_hostname         # Your PostgreSQL host (usually 'localhost' for local setup)
+      DB_NAME=wordle_clone             # The name of your PostgreSQL database
+      DB_PASSWORD=your_secure_password # Your PostgreSQL password
+      DB_PORT=5432                    # PostgreSQL default port (usually 5432)
+      BACK_PORT=5000                  # Port for backend (Express)
+      FRONT_PORT=5173                 # Port for frontend (Vite)
+      NODE_ENV=development            # Set to 'production' for production environments
+      SECRET=your_app_secret          # Secret key for session encryption
+   ```
+
 
 3. **Frontend Setup**:
    - Navigate to the `frontend` folder:
@@ -80,29 +120,18 @@
    ``` 
     These scripts will run both the frontend and backend simultaneously when you run:
     ```bash
+         npm install
          npm start
     ```
      This will:
      Start the backend server (Express).
      Start the frontend development server (Vite).
 
-## Database Setup
+## Database Setup (Non-Docker setup)
 
 To set up the PostgreSQL database schema required for the application, follow these steps:
 
-1. **Create the database**  
-   Open a terminal or PostgreSQL client and run the following command to create the `wordle_clone` database:
-
-   ```bash
-   createdb wordle_clone
-   ```
-
-   > If `createdb` isn't available, you can also create the database from a PostgreSQL shell with the following SQL command:
-   ```bash
-   CREATE DATABASE wordle_clone;
-   ```
-
-2. **Run the schema.sql file**  
+1. **Run the schema.sql file**  
    Navigate to the `backend/db` directory and run the following command to set up the database schema:
 
    ```bash

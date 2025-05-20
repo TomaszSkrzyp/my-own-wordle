@@ -5,10 +5,15 @@
 -- Dumped from database version 17.2
 -- Dumped by pg_dump version 17.2
 
+-- Create the database first
+CREATE DATABASE wordle_clone;
+
+-- Connect to the new database
+\connect wordle_clone;
+
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -92,10 +97,15 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 -- Name: words; Type: TABLE; Schema: public; Owner: -
 --
 
+-- Name: words; Type: TABLE; Schema: public; Owner: -
+
 CREATE TABLE public.words (
     word character varying(5),
     date_used date
 );
+
+ALTER TABLE ONLY public.words
+    ADD CONSTRAINT words_word_key UNIQUE (word);
 
 
 --

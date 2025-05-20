@@ -1,5 +1,7 @@
 
 import { loadAllWords } from '../database/wordList/loadWordsFromDB.js';
+
+import { insertWordsToDatabase } from '../database/wordList/loadWordsToDB.js';
 import {  computeLetterFrequencies, sortWordListByLetterFrequency } from './wordFrequencyHelpers.js';
 
 let sortedWordList = [];
@@ -14,6 +16,14 @@ Populates `wordList`, computes letter frequencies, then creates
 async function initWordList() {
     console.log("Start loading word list...");
     wordList = await loadAllWords();
+     if (wordList.length === 0) {
+        console.log('Word list empty or not found. Inserting from file...');
+        await insertWordsToDatabase();
+        wordList = await loadAllWords();
+    }
+    else{
+        console.log("The database is already populated. Moving on with the setupS")
+    }
 
     console.log(`Word list loaded with ${wordList.length} entries.`);
 
@@ -23,7 +33,6 @@ async function initWordList() {
     // sort word list by frequency score
     sortedWordList = sortWordListByLetterFrequency(wordList, letterFrequencies);
 
-    console.log("Word list sorted by letter frequency.");
     console.log(sortedWordList[0]);
     
 }
@@ -43,7 +52,7 @@ function getSortedWordList() {
 
 Check if a given word is valid (5 letters & in the loaded list).
 
-Returns true only if it’s exactly 5 alphabetic characters and exists in `wordList`.
+Returns true only if itï¿½s exactly 5 alphabetic characters and exists in `wordList`.
 */
 function isValidWord(word) {
     // check if the word is 5-letter long 

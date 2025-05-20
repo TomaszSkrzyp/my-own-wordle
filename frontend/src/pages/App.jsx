@@ -9,10 +9,10 @@ import SolveDisplay from '../components/SolveDisplay';
 import { CsrfContext } from '../csrf/CsrfContext';
 import { useNavigate } from 'react-router-dom';
 /*
-Main Wordle game component responsible for gameplay logic, state management,
+Main my-own-ordle game component responsible for gameplay logic, state management,
 and interaction with backend game APIs.
 Features:
- - Displays the Wordle board and handles user input
+ - Displays the my-own-ordle board and handles user input
  - Fetches and validates guesses
  - Manages game state, win/loss conditions, and hints
  - Shows modals for game end and error messages
@@ -32,6 +32,7 @@ const App = () => {
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
     const [solveResult, setSolveResult] = useState(null);
     const [solutionShown, setSolutionShown] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
 
 
@@ -178,42 +179,52 @@ const App = () => {
       Handles win/lose condition modals. 
     */
     const submitGuess = async () => {
-        const currentGuess = guesses[storedAttempts].join('').toLowerCase();
+        if (isSubmitting) return;
 
-        // Send guess to server
-        const response = await fetch('http://localhost:5000/api/word/check', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': csrfToken,
-            },
-            credentials: 'include',
-            body: JSON.stringify({ guess: currentGuess }),
-        });
+        setIsSubmitting(true);
+        try {
+            const currentGuess = guesses[storedAttempts].join('').toLowerCase();
 
-        if (response.status === 403) {
-            // CSRF mismatch or unauthorized session
-            navigate('/'); // Redirect to homepage/login
-            return;
-        }
+            const response = await fetch('http://localhost:5000/api/word/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken,
+                },
+                credentials: 'include',
+                body: JSON.stringify({ guess: currentGuess }),
+            });
 
-        const data = await response.json();
-        if (data.error) {
-            showModal(data.error);
-        } else {
-            setAscii(data.gameState.letterColors);
-            setGuesses(data.gameState.guesses);
-            setAttempts(data.gameState.attempts);
-            setGameOver(data.gameState.gameOver);
-            setHintAvailable(data.gameState.hintAvailable);
-        }
-        if (data.result === 'ggggg') {
-            showModal('You won!');
-        } else if (data.gameState.attempts > 5) {
-            showModal('You ran out of guesses!');
-        }
-        if (solutionShown) {
-            toggleSolution();
+            if (response.status === 403) {
+                navigate('/'); 
+                return;
+            }
+
+            const data = await response.json();
+
+            if (data.error) {
+                showModal(data.error);
+            } else {
+                setAscii(data.gameState.letterColors);
+                setGuesses(data.gameState.guesses);
+                setAttempts(data.gameState.attempts);
+                setGameOver(data.gameState.gameOver);
+                setHintAvailable(data.gameState.hintAvailable);
+            }
+
+            if (data.result === 'ggggg') {
+                showModal('You won!');
+            } else if (data.gameState.attempts > 5) {
+                showModal('You ran out of guesses!');
+            }
+
+            if (solutionShown) {
+                toggleSolution();
+            }
+        } catch (err) {
+            console.error("Guess submission failed:", err);
+        } finally {
+            setIsSubmitting(false);//free up guess submitting
         }
     };
 
@@ -287,7 +298,7 @@ const App = () => {
 
             
 
-            <h1>Wordle Game</h1>
+            <h1>my-own-wordle game</h1>
             <div className="button-container">
                 <button className="profile-button" onClick={navigateProfile}>
                     {isLoggedIn ? 'Profile' : 'Home'}

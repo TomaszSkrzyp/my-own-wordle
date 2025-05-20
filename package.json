@@ -8,8 +8,5 @@
   },
   "devDependencies": {
     "concurrently": "^7.0.0"
-  },
-  "dependencies": {
-    "lusca": "^1.7.0"
   }
 }

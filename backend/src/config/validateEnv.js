@@ -16,7 +16,7 @@ Validates and parses required environment variables.
     FRONT_PORT: port(),
     DB_HOST: str(),
     DB_USER: str(),
-    DB_PASSWORD: str(),
+    POSTGRES_PASSWORD: str(),
     DB_NAME: str(),
     DB_PORT: port(),
     NODE_ENV: str({ choices: ['development', 'production'] }),

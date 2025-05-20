@@ -1,0 +1,35 @@
+version: '3.9'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - ./backend/src/logic/files:/app/files 
+    command: npm start
+    depends_on:
+      - db
+    env_file:
+      - ./backend/.env
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    command: npm run dev
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/db:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./backend/.env
+
+volumes:
+  pgdata:

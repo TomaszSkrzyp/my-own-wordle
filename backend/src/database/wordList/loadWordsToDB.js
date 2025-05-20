@@ -1,10 +1,12 @@
 //PROJEKT
 import fs from 'fs';
+import path from 'path';
 import pool from '../db.js';
 
 async function insertWordsToDatabase() {
     try {
-        const data = await fs.promises.readFile('words.txt', 'utf8');
+        const wordsFilePath = path.resolve('./files/words.txt');  // Path inside container
+        const data = await fs.promises.readFile(wordsFilePath, 'utf8');
         const words = data.split('\n').map(word => word.trim()).filter(word => word.length > 0);
 
         for (let word of words) {
@@ -23,4 +25,4 @@ async function insertWordsToDatabase() {
     }
 }
 
-insertWordsToDatabase();
+export {insertWordsToDatabase};
