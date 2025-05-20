@@ -96,7 +96,7 @@
       DB_USER=postgres                 # Your PostgreSQL username (e.g., 'postgres')
       DB_HOST=your_db_hostname         # Your PostgreSQL host (usually 'localhost' for local setup)
       DB_NAME=wordle_clone             # The name of your PostgreSQL database
-      DB_PASSWORD=your_secure_password # Your PostgreSQL password
+      POSTGRES_PASSWORD=your_secure_password # Your PostgreSQL password
       DB_PORT=5432                    # PostgreSQL default port (usually 5432)
       BACK_PORT=5000                  # Port for backend (Express)
       FRONT_PORT=5173                 # Port for frontend (Vite)
