@@ -43,7 +43,6 @@ Executes the daily reset operations for the game.
  */
 const runDailyTask = async () => {
     try {
-        await setRandom();
         console.log('Running daily reset task...');
         await resetStatesFromDB();
 
@@ -56,14 +55,14 @@ const runDailyTask = async () => {
 Initializes resources and ensures the daily task runs once per day.
 
 On startup, this function loads the word list, checks the timestamp of the last
-daily reset, and if it hasn’t run today, executes`runDailyTask` and updates
+daily reset, and if it hasnï¿½t run today, executes`runDailyTask` and updates
 the timestamp file.
 */
 const startTasks = async () => {
     const now = new Date();
     const lastRun =  getLastRunTime();
     await initWordList();
-    
+    await setRandom();
     // if the daily tasks has not been run today
     if (!lastRun || now.getDate() !== lastRun.getDate()) {
         console.log('Daily task missed. Running task now...');

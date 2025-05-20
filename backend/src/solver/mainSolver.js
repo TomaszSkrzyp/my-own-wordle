@@ -78,7 +78,7 @@ function findLetterRules(guesses) {
     };
 }
 /*
-Suggest the next best guess using the current game’s guess history.
+Suggest the next best guess using the current gameï¿½s guess history.
 
 Combines letter rules and viable-word filtering to return the top candidate
 and the total number of possibilities remaining.
@@ -86,7 +86,7 @@ and the total number of possibilities remaining.
 function solver(guesses) {
     const { greenLetters, yellowLetters, blackLetters } = findLetterRules(guesses);
     const possibleWordList = findViableWords(greenLetters, yellowLetters, blackLetters);
-    console.log(possibleWordList[0]);
+  
     return { word: possibleWordList[0], number: possibleWordList.length};
 }
 export default solver;

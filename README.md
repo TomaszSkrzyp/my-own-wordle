@@ -19,7 +19,7 @@
 - **API**: RESTful API for communication between frontend and backend
 - **Session Management**: Express-session for managing user sessions
 - **Security**: Lusca middleware for CSRF protection, XSS protection, and secure HTTP headers
-- "**Containerization**: Docker for easy setup and deployment
+- **Containerization**: Docker for easy setup and deployment
 
 ## Installation
 
@@ -28,22 +28,23 @@
 - Node.js (v16.x or higher)
 - PostgreSQL
 - Git
+- Docker (optional, but recommended)
 
 ### **Docker Setup (Recommended)**
 
 1. **Clone the repository**:  
-   $'''bash
+   '''bash
    git clone https://github.com/TomaszSkrzyp/my-own-wordle.git  
    cd my-own-wordle
-   $'''
+   '''
 
 2. **Copy the backend environment file**:  
-   $'''bash
+   '''bash
    cp backend/.env.example backend/.env
-   $'''
+   '''
 
 3. **Open `.env` in a text editor and fill in your database credentials and secrets**:  
-   $'''env
+   '''env
    DB_USER=postgres                 # PostgreSQL default user
    DB_HOST=db                      # The name of the database service in docker-compose.yml
    DB_NAME=wordle_clone            # The name of your PostgreSQL database
@@ -53,16 +54,20 @@
    FRONT_PORT=5173                 # Port for frontend (Vite)
    NODE_ENV=development            # Change to 'production' if deploying
    SECRET=your_app_secret          # Change to a secure session secret
-   $'''
+   '''
 
 4. **Start the application with Docker Compose**:  
-   $'''bash
+   '''bash
    docker-compose up --build
-   $'''
+   '''
 
 5. **Access the app**:  
    - Frontend: [http://localhost:5173]
    - Backend API: [http://localhost:5000]
+
+6. **Database Setup**
+   Since you're using Docker there is no need for any extra DB setup
+
 
 ### Non-Docker Setup
 
@@ -132,13 +137,17 @@
 To set up the PostgreSQL database schema required for the application, follow these steps:
 
 1. **Run the schema.sql file**  
-   Navigate to the `backend/db` directory and run the following command to set up the database schema:
+   Navigate to the root directory and run the following command to set up the database schema:
 
    ```bash
    psql -U postgres -d wordle_clone -f backend/db/schema.sql
    ```
-
-   Replace `postgres` with your actual PostgreSQL username if it differs. This will create the necessary tables and structures for the application.
+    Replace `postgres` with your actual PostgreSQL username if it differs. This will create the necessary tables and structures for the application.
+2. **Populating**
+   To enable the app to populate DB propperly you need to copy the contents of `/backend/src/logic/files` to `/backend/files`:
+   ```bash
+      cp -r backend/src/logic/files/* backend/files/
+   ```
 
 ## License
 

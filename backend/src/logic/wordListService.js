@@ -22,7 +22,7 @@ async function initWordList() {
         wordList = await loadAllWords();
     }
     else{
-        console.log("The database is already populated. Moving on with the setupS")
+        console.log("The database is already populated. Moving on with the setup")
     }
 
     console.log(`Word list loaded with ${wordList.length} entries.`);
@@ -33,7 +33,6 @@ async function initWordList() {
     // sort word list by frequency score
     sortedWordList = sortWordListByLetterFrequency(wordList, letterFrequencies);
 
-    console.log(sortedWordList[0]);
     
 }
 /*
